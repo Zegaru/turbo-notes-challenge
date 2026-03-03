@@ -24,7 +24,7 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-xl font-semibold">Log in</h1>
+        <h1 className="text-xl font-semibold font-heading">Log in</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <div>
             <label className="block text-sm text-gray-600">Email</label>

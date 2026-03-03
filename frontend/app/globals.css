@@ -1,1 +1,58 @@
 @import "tailwindcss";
+
+/* Design System - Notes Challenge */
+@theme inline {
+  /* Typography (references next/font variables from layout) */
+  --font-heading: var(--font-inria-serif, "Inria Serif", Georgia, serif);
+  --font-body: var(--font-inter, "Inter", ui-sans-serif, system-ui, sans-serif);
+}
+
+@theme {
+  /* Note colors (solid - for dots, accents) */
+  --color-note-orange: #ef9c66;
+  --color-note-yellow: #fcdc94;
+  --color-note-sage: #c8cfa0;
+  --color-note-teal: #78aba8;
+
+  /* Card backgrounds (color + 50% opacity) */
+  --color-note-orange-card: rgb(239 156 102 / 0.5);
+  --color-note-yellow-card: rgb(252 220 148 / 0.5);
+  --color-note-sage-card: rgb(200 207 160 / 0.5);
+  --color-note-teal-card: rgb(120 171 168 / 0.5);
+
+  /* Borders & accent */
+  --color-border: #957139;
+  --color-accent: #957139;
+
+  /* Backgrounds */
+  --color-bg: #faf1e3;
+  --color-bg-cream: #faf1e3;
+  --color-bg-warm: #ef9c66;
+
+  /* Hover/active state (#957139 at 20% opacity) */
+  --color-hover: rgb(149 113 57 / 0.2);
+
+  /* Radius */
+  --radius-card: 12px;
+  --radius-chip: 6px;
+
+  /* Shadow */
+  --shadow-card: 1px 1px 2px 0 rgb(0 0 0 / 0.25);
+}
+
+/* Base styles using design tokens */
+@layer base {
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-bg);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+}

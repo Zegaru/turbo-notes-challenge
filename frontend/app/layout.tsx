@@ -1,5 +1,17 @@
 import type { Metadata } from "next";
+import { Inria_Serif, Inter } from "next/font/google";
 import "./globals.css";
+
+const inriaSerif = Inria_Serif({
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+  variable: "--font-inria-serif",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "Notes Challenge",
@@ -12,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inriaSerif.variable} ${inter.variable}`}>
       <body>{children}</body>
     </html>
   );
