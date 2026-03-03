@@ -1,6 +1,7 @@
 """
 Django settings for notes-challenge backend.
 """
+
 import os
 from pathlib import Path
 
@@ -60,11 +61,15 @@ TEMPLATES = [
     },
 ]
 
+_default_db_url = (
+    f"postgres://{os.environ.get('POSTGRES_USER', 'notes')}:"
+    f"{os.environ.get('POSTGRES_PASSWORD', 'notes')}@"
+    f"{os.environ.get('POSTGRES_HOST', 'localhost')}:"
+    f"{os.environ.get('POSTGRES_PORT', '5432')}/"
+    f"{os.environ.get('POSTGRES_DB', 'notes')}"
+)
 default_db = dj_database_url.config(
-    default=os.environ.get(
-        "DATABASE_URL",
-        f"postgres://{os.environ.get('POSTGRES_USER', 'notes')}:{os.environ.get('POSTGRES_PASSWORD', 'notes')}@{os.environ.get('POSTGRES_HOST', 'localhost')}:{os.environ.get('POSTGRES_PORT', '5432')}/{os.environ.get('POSTGRES_DB', 'notes')}",
-    ),
+    default=os.environ.get("DATABASE_URL", _default_db_url),
     conn_max_age=600,
     conn_health_checks=True,
 )

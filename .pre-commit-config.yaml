@@ -1,0 +1,44 @@
+# Install: pre-commit install && pre-commit install --hook-type pre-push
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Backend: ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.14
+    hooks:
+      - id: ruff
+        name: ruff (backend)
+        args: [--config, backend/pyproject.toml]
+        files: ^backend/.*\.py$
+
+  # Backend: black
+  - repo: https://github.com/psf/black
+    rev: 24.2.0
+    hooks:
+      - id: black
+        name: black (backend)
+        args: [--config, backend/pyproject.toml]
+        files: ^backend/.*\.py$
+
+  # Frontend: ESLint
+  - repo: local
+    hooks:
+      - id: frontend-lint
+        name: eslint (frontend)
+        entry: bash -c "cd frontend && pnpm run lint"
+        language: system
+        files: ^frontend/.*\.(ts|tsx|js|jsx)$
+
+  # Pre-push: backend tests + frontend typecheck
+  - repo: local
+    hooks:
+      - id: backend-pytest
+        name: pytest (backend)
+        entry: bash -c "cd backend && uv run pytest"
+        language: system
+        stages: [pre-push]
+      - id: frontend-typecheck
+        name: typecheck (frontend)
+        entry: bash -c "cd frontend && pnpm run typecheck"
+        language: system
+        stages: [pre-push]

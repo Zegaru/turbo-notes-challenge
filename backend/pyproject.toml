@@ -2,7 +2,6 @@
 name = "notes-backend"
 version = "0.1.0"
 description = "Django 5 + DRF backend for notes-challenge"
-readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "Django>=5.0",
@@ -13,14 +12,18 @@ dependencies = [
     "psycopg[binary]>=3.1",
     "gunicorn>=21.0",
     "python-dotenv>=1.0",
+    "dj-database-url>=2.0",
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.uv]
-dev-dependencies = [
+[tool.hatch.build.targets.wheel]
+packages = ["config", "core", "api"]
+
+[dependency-groups]
+dev = [
     "pytest>=8.0",
     "pytest-django>=4.8",
     "ruff>=0.4",

@@ -1,6 +1,7 @@
 """
 WSGI config for notes-challenge backend.
 """
+
 import os
 
 from django.core.wsgi import get_wsgi_application
