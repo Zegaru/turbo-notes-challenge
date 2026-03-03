@@ -48,6 +48,8 @@ Protected routes (`/app/*`) redirect to `/login` when unauthenticated. Auth rout
 | `docker compose up`                        | Start all services   |
 | `cd backend && python manage.py runserver` | Run backend locally  |
 | `cd frontend && pnpm dev`                  | Run frontend locally |
+| `cd backend && uv run pytest`              | Run backend tests   |
+| `cd frontend && pnpm test`                 | Run frontend tests  |
 
 ## Pre-commit
 
