@@ -13,6 +13,8 @@ dependencies = [
     "gunicorn>=21.0",
     "python-dotenv>=1.0",
     "dj-database-url>=2.0",
+    "Pillow>=10.0",
+    "openai>=1.0",
 ]
 
 [build-system]
@@ -34,6 +36,7 @@ dev = [
 target-version = "py312"
 line-length = 100
 src = ["config", "core", "api", "tests"]
+exclude = ["migrations"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]
