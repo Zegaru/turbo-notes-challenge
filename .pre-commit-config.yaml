@@ -4,7 +4,7 @@
 repos:
   # Backend: ruff
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.14
+    rev: v0.15.4
     hooks:
       - id: ruff
         name: ruff (backend)

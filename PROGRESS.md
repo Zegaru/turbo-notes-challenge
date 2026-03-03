@@ -3,9 +3,9 @@
 | Task                | Status      |
 | ------------------- | ----------- |
 | Project Scaffolding | Done        |
-| Backend             | In Progress |
-| Frontend            | In Progress |
-| Database            | In Progress |
+| Backend             | Done        |
+| Frontend            | Done        |
+| Database            | Done        |
 | Authentication      | In Progress |
 | Authorization       | In Progress |
 | Testing             | In Progress |
