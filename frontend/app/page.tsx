@@ -1,8 +1,10 @@
+import { LandingRedirect } from "@/components/landing-redirect";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
+      <LandingRedirect />
       <h1 className="text-2xl font-semibold">Notes Challenge</h1>
       <p className="text-gray-500">Frontend placeholder.</p>
       <nav className="flex gap-4">

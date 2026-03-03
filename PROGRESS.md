@@ -6,8 +6,8 @@
 | Backend             | Done        |
 | Frontend            | Done        |
 | Database            | Done        |
-| Authentication      | In Progress |
-| Authorization       | In Progress |
+| Authentication      | Done        |
+| Authorization       | Done        |
 | Testing             | In Progress |
 | Categories          | In Progress |
 | Notes               | In Progress |
