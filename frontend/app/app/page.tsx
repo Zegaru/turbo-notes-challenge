@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 
 function AppContent() {
   const router = useRouter();
-  const { categoryIdParam, noteId, closeHref } = useAppSearchParams();
+  const { noteId, closeHref } = useAppSearchParams();
   const { createNote, isPending } = useCreateNote();
   const isEditing = noteId !== null;
 
@@ -31,7 +31,7 @@ function AppContent() {
           className="hidden rounded-full border-border px-6 py-2.5 font-body text-sm font-medium lg:flex"
           data-testid="new-note-btn"
         >
-          {isPending ? "Creating…" : "+ New Note"}
+          + New Note
         </Button>
       </div>
 

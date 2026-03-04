@@ -157,7 +157,7 @@ export default function Home() {
                   variant="primary"
                   size="lg"
                   onClick={handleOpenApp}
-                  className="group relative overflow-hidden font-body text-base shadow-[4px_4px_0px_0px_rgba(149,113,57,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(149,113,57,1)]"
+                  className="group relative overflow-hidden text-base w-full sm:w-auto"
                 >
                   <span className="relative z-10">Open Notebook</span>
                 </Button>
@@ -167,7 +167,7 @@ export default function Home() {
                     <Button
                       variant="primary"
                       size="lg"
-                      className="group font-body text-base shadow-[4px_4px_0px_0px_rgba(149,113,57,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(149,113,57,1)]"
+                      className="group text-base w-full sm:w-auto"
                     >
                       Start Writing
                     </Button>
