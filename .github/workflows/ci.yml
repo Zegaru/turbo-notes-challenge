@@ -88,19 +88,17 @@ jobs:
       - name: Install frontend dependencies
         run: cd frontend && pnpm install --frozen-lockfile
 
-      - name: Build frontend
-        run: cd frontend && pnpm build
+      - name: Install Playwright browsers
+        run: cd frontend && pnpm exec playwright install chromium --with-deps
 
-      - name: Serve frontend
+      - name: Start frontend
         run: |
-          cd frontend && npx serve out -l 3000 -s &
-          for i in $(seq 1 30); do
+          cd frontend && pnpm dev &
+          for i in $(seq 1 60); do
             curl -sf http://localhost:3000/signup > /dev/null && break
             sleep 2
           done
-
-      - name: Install Playwright browsers
-        run: cd frontend && pnpm exec playwright install chromium --with-deps
+          curl -sf http://localhost:3000/signup > /dev/null || (echo "Frontend failed to start" && exit 1)
 
       - name: Run E2E tests
         run: cd frontend && pnpm test:e2e
