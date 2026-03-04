@@ -21,6 +21,8 @@ CATEGORY_COLORS = [
     ("yellow", "Yellow"),
     ("sage", "Sage"),
     ("teal", "Teal"),
+    ("coral", "Coral"),
+    ("lavender", "Lavender"),
 ]
 
 

@@ -13,12 +13,16 @@
   --color-note-yellow: #fcdc94;
   --color-note-sage: #c8cfa0;
   --color-note-teal: #78aba8;
+  --color-note-coral: #e8a598;
+  --color-note-lavender: #b8a9c9;
 
   /* Card backgrounds (color + 50% opacity) */
   --color-note-orange-card: rgb(239 156 102 / 0.5);
   --color-note-yellow-card: rgb(252 220 148 / 0.5);
   --color-note-sage-card: rgb(200 207 160 / 0.5);
   --color-note-teal-card: rgb(120 171 168 / 0.5);
+  --color-note-coral-card: rgb(232 165 152 / 0.5);
+  --color-note-lavender-card: rgb(184 169 201 / 0.5);
 
   /* Borders & accent */
   --color-border: #957139;
@@ -59,7 +63,6 @@
   h6 {
     font-family: var(--font-heading);
   }
-
 }
 
 /*

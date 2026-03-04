@@ -1,12 +1,20 @@
 import { api } from "./api";
 
-export type CategoryColor = "orange" | "yellow" | "sage" | "teal";
+export type CategoryColor =
+  | "orange"
+  | "yellow"
+  | "sage"
+  | "teal"
+  | "coral"
+  | "lavender";
 
 export const CATEGORY_COLORS: CategoryColor[] = [
   "orange",
   "yellow",
   "sage",
   "teal",
+  "coral",
+  "lavender",
 ];
 
 export const colorToDotClass: Record<CategoryColor, string> = {
@@ -14,6 +22,8 @@ export const colorToDotClass: Record<CategoryColor, string> = {
   yellow: "bg-note-yellow",
   sage: "bg-note-sage",
   teal: "bg-note-teal",
+  coral: "bg-note-coral",
+  lavender: "bg-note-lavender",
 };
 
 export const colorToCardClass: Record<CategoryColor, string> = {
@@ -21,6 +31,8 @@ export const colorToCardClass: Record<CategoryColor, string> = {
   yellow: "bg-note-yellow-card border-note-yellow",
   sage: "bg-note-sage-card border-note-sage",
   teal: "bg-note-teal-card border-note-teal",
+  coral: "bg-note-coral-card border-note-coral",
+  lavender: "bg-note-lavender-card border-note-lavender",
 };
 
 export type Category = {

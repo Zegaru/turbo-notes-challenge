@@ -18,6 +18,8 @@ All tokens are available as Tailwind utilities. Import `globals.css` (already do
 | Yellow | `#FCDC94` | `bg-note-yellow`, `text-note-yellow`, `border-note-yellow` |
 | Sage | `#C8CFA0` | `bg-note-sage`, `text-note-sage`, `border-note-sage` |
 | Teal | `#78ABA8` | `bg-note-teal`, `text-note-teal`, `border-note-teal` |
+| Coral | `#E8A598` | `bg-note-coral`, `text-note-coral`, `border-note-coral` |
+| Lavender | `#B8A9C9` | `bg-note-lavender`, `text-note-lavender`, `border-note-lavender` |
 
 ### Card Backgrounds (50% opacity)
 
@@ -27,6 +29,8 @@ All tokens are available as Tailwind utilities. Import `globals.css` (already do
 | Yellow card | `bg-note-yellow-card` |
 | Sage card | `bg-note-sage-card` |
 | Teal card | `bg-note-teal-card` |
+| Coral card | `bg-note-coral-card` |
+| Lavender card | `bg-note-lavender-card` |
 
 ### Borders & Accent
 
