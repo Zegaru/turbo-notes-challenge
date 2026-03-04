@@ -112,8 +112,9 @@ export const notesApi = {
       category: number | null;
       pinned: boolean;
       draft: boolean;
-    }>
-  ) => api.patch<Note>(`/api/notes/${id}/`, data),
+    }>,
+    options?: { signal?: AbortSignal }
+  ) => api.patch<Note>(`/api/notes/${id}/`, data, options),
   delete: (id: number) => api.delete(`/api/notes/${id}/`),
   suggestCategory: (data: { title?: string; content?: string }) =>
     api.post<SuggestCategoryResponse>("/api/notes/suggest_category/", data),

@@ -9,7 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <Suspense fallback={<aside className="w-64 shrink-0 py-10 pl-10 pr-4" />}>
           <Sidebar />
         </Suspense>
-        <main className="min-h-0 flex-1 overflow-auto">{children}</main>
+        <main className="scrollbar min-h-0 flex-1 overflow-auto">{children}</main>
       </div>
     </AuthGuard>
   );

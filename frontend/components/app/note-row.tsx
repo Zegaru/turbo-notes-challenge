@@ -5,6 +5,7 @@ import {
   type CategoryColor,
   type Note,
 } from "@/lib/api-client";
+import { MarkdownPreview } from "@/components/app/markdown-preview";
 import Link from "next/link";
 
 const DEFAULT_CARD_CLASS = "bg-note-orange-card border-note-orange";
@@ -53,7 +54,7 @@ export function NoteRow({
   return (
     <Link
       href={href}
-      className={`block rounded-2xl border p-6 font-body shadow-card transition-transform hover:-translate-y-1 ${bgClass} ${
+      className={`block rounded-2xl border-2 p-6 font-body shadow-card transition-transform hover:-translate-y-1 ${bgClass} ${
         isSelected ? "ring-2 ring-black ring-offset-2 ring-offset-bg" : ""
       }`}
     >
@@ -70,9 +71,12 @@ export function NoteRow({
           <h3 className="mt-4 font-heading text-3xl text-black">
             {note.title || "Untitled"}
           </h3>
-          <p className="mt-3 line-clamp-4 text-sm text-gray-800 leading-relaxed">
-            {note.content || ""}
-          </p>
+          <div className="mt-3 line-clamp-4 overflow-hidden">
+            <MarkdownPreview
+              content={note.content || ""}
+              className="text-sm text-gray-800 leading-relaxed [&_h1]:text-base [&_h1]:font-bold [&_h2]:text-sm [&_h2]:font-bold [&_h3]:text-sm [&_h3]:font-bold"
+            />
+          </div>
         </div>
         <button
           type="button"

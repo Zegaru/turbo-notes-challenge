@@ -60,3 +60,31 @@
     font-family: var(--font-heading);
   }
 }
+
+/*
+ * Reusable scrollbar - add to any scrollable element (overflow-auto, overflow-y-auto, etc.)
+ * Customize via CSS vars: --scrollbar-thumb, --scrollbar-thumb-hover, --scrollbar-size
+ */
+@layer utilities {
+  .scrollbar {
+    --scrollbar-thumb: rgb(149 113 57 / 0.35);
+    --scrollbar-thumb-hover: rgb(149 113 57 / 0.55);
+    --scrollbar-size: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+  .scrollbar::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+  }
+  .scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+  }
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+}
