@@ -205,8 +205,8 @@ function NoteEditorForm({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 p-6 pb-2! sm:p-8 lg:p-12">
-        <div className="flex items-center gap-2">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 p-4 pb-2! sm:p-6 lg:p-8">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {showViewMode ? (
             <span className="inline-flex items-center gap-1.5 rounded-chip border border-border bg-bg/50 px-3 py-1 font-body text-sm text-gray-800">
               {categoryName ?? "No Category"}
@@ -230,14 +230,20 @@ function NoteEditorForm({
                 }
                 disabled={suggestMutation.isPending || !hasTitleOrContent}
                 className="rounded-chip px-2 py-1 text-xs inline-flex items-center gap-1.5"
+                title="Suggest category"
               >
                 {suggestMutation.isPending ? (
                   <>
                     <Spinner size="sm" />
-                    <span>Thinking</span>
+                    <span className="hidden sm:inline">Thinking</span>
                   </>
                 ) : (
-                  "Suggest category"
+                  <>
+                    <svg className="w-4 h-4 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span className="hidden sm:inline">Suggest category</span>
+                  </>
                 )}
               </Button>
               {suggestion && (
@@ -257,7 +263,7 @@ function NoteEditorForm({
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {showViewMode ? (
             <Button
               variant="primary"
@@ -345,7 +351,7 @@ function NoteEditorForm({
           )}
           <Link
             href={closeHref}
-            className="text-gray-500 hover:text-black p-1 rounded focus-ring"
+            className="hidden sm:block text-gray-500 hover:text-black p-1 rounded focus-ring"
             aria-label="Close note"
             data-testid="note-editor-close"
           >
@@ -366,8 +372,8 @@ function NoteEditorForm({
         </div>
       </div>
 
-      <div className="scrollbar relative z-10 flex-1 min-h-0 overflow-y-auto p-6 pt-2! h-full sm:p-8 lg:p-12">
-        <div className="flex min-h-min flex-col h-full">
+      <div className="scrollbar relative z-10 flex-1 min-h-0 overflow-y-auto p-4 pt-2! h-full sm:p-6 lg:p-8">
+        <div className="flex min-h-min flex-col h-full pb-24 sm:pb-8">
           <div className="flex justify-end ">
             <span className="text-sm text-gray-600 font-body">
               {note?.updated_at
@@ -491,7 +497,7 @@ function NoteEditorForm({
                   type="button"
                   aria-pressed={contentMode === "split"}
                   onClick={() => setContentMode("split")}
-                  className={`rounded-chip border px-2 py-1 font-body text-sm focus-ring ${
+                  className={`hidden sm:block rounded-chip border px-2 py-1 font-body text-sm focus-ring ${
                     contentMode === "split"
                       ? "border-border bg-bg shadow-card"
                       : "border-transparent text-gray-600 hover:text-black"
@@ -502,7 +508,7 @@ function NoteEditorForm({
               </div>
 
               {contentMode === "split" ? (
-                <div className="mt-4 p-1 flex-1 min-h-[200px] flex flex-col gap-4 overflow-hidden lg:flex-row">
+                <div className="mt-4 p-1 flex-1 min-h-[200px] flex flex-col sm:flex-row gap-4 overflow-hidden">
                   <textarea
                     ref={contentTextareaRef}
                     value={content}
@@ -515,10 +521,10 @@ function NoteEditorForm({
                     data-testid="note-content"
                   />
                   <div
-                    className="h-px w-full shrink-0 bg-gray-300/60 lg:h-auto lg:w-px"
+                    className="hidden sm:block h-px w-full shrink-0 bg-gray-300/60 sm:h-auto sm:w-px"
                     aria-hidden
                   />
-                  <div className="scrollbar flex-1 min-w-0 overflow-y-auto">
+                  <div className="hidden sm:block scrollbar flex-1 min-w-0 overflow-y-auto">
                     <MarkdownPreview content={content} />
                   </div>
                 </div>
@@ -604,6 +610,27 @@ function NoteEditorForm({
           className="absolute bottom-6 right-6 z-50 origin-bottom-right sm:bottom-8 sm:right-8"
         />
       )}
+
+      <Link
+        href={closeHref}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-border bg-bg shadow-[0_4px_14px_rgba(0,0,0,0.15)] text-gray-600 hover:text-black hover:bg-hover transition-colors focus-ring sm:hidden"
+        aria-label="Close note"
+        data-testid="note-editor-close-mobile"
+      >
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </Link>
     </div>
   );
 }

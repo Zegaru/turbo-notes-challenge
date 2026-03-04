@@ -27,8 +27,8 @@ export function BottomNav() {
         <Link
           href={allNotesHref}
           aria-current={isAllNotes ? "page" : undefined}
-          className={`flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs transition-colors rounded focus-ring ${
-            isAllNotes ? "text-accent font-semibold" : "text-gray-600"
+          className={`flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs transition-colors rounded-card focus-ring ${
+            isAllNotes ? "text-accent font-semibold" : "text-gray-600 hover:text-accent"
           }`}
         >
           <svg
@@ -50,7 +50,7 @@ export function BottomNav() {
         <button
           type="button"
           onClick={() => setCategoriesOpen(true)}
-          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs text-gray-600 transition-colors hover:text-accent rounded focus-ring"
+          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs text-gray-600 transition-colors hover:text-accent rounded-card focus-ring"
         >
           <svg
             className="h-6 w-6"
@@ -72,7 +72,7 @@ export function BottomNav() {
           type="button"
           onClick={() => createNote()}
           disabled={isPending}
-          className="flex flex-1 flex-col items-center gap-1 my-2 py-2 px-2 font-body text-xs font-medium text-white bg-accent hover:bg-accent/90 disabled:opacity-50 transition-colors min-w-0 rounded focus-ring"
+          className="flex flex-col items-center justify-center gap-1 -mt-5 mb-1 h-14 w-14 rounded-full border border-border bg-bg shadow-card hover:bg-hover text-accent disabled:opacity-50 transition-colors focus-ring"
         >
           <svg
             className="h-6 w-6"
@@ -87,14 +87,14 @@ export function BottomNav() {
               d="M12 4v16m8-8H4"
             />
           </svg>
-          New Note
+          <span className="sr-only">New Note</span>
         </button>
 
         <button
           type="button"
           onClick={() => logout.mutate()}
           disabled={logout.isPending}
-          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs text-gray-600 transition-colors hover:text-accent disabled:opacity-50 rounded focus-ring"
+          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs text-gray-600 transition-colors hover:text-accent disabled:opacity-50 rounded-card focus-ring"
         >
           <svg
             className="h-6 w-6"
