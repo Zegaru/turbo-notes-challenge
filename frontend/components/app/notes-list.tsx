@@ -3,15 +3,30 @@
 import { useDebouncedValue } from "@/lib/use-debounced-value";
 import { useNotesQuery, usePinMutation } from "@/lib/notes-queries";
 import { useAppSearchParams } from "@/lib/use-app-search-params";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { NotesSearch } from "./notes-search";
 import { NoteRow } from "./note-row";
 
 export function NotesList() {
-  const { noteId, categoryIdParam } = useAppSearchParams();
-  const [searchInput, setSearchInput] = useState("");
+  const { noteId, categoryIdParam, searchParam, setSearchInUrl } =
+    useAppSearchParams();
+  const [searchInput, setSearchInput] = useState(searchParam ?? "");
   const debouncedSearch = useDebouncedValue(searchInput, 300);
+  const lastWrittenSearchRef = useRef<string>("");
+
+  useEffect(() => {
+    setSearchInUrl(debouncedSearch);
+    lastWrittenSearchRef.current = debouncedSearch;
+  }, [debouncedSearch, setSearchInUrl]);
+
+  useEffect(() => {
+    if (searchParam !== lastWrittenSearchRef.current) {
+      lastWrittenSearchRef.current = searchParam ?? "";
+      const value = searchParam ?? "";
+      queueMicrotask(() => setSearchInput(value));
+    }
+  }, [searchParam]);
 
   const { data: notes = [], isPending } = useNotesQuery(
     categoryIdParam,
@@ -23,8 +38,9 @@ export function NotesList() {
     pinMutation.mutate({ id: note.id, pinned: !note.pinned });
   };
 
-  const pinnedNotes = notes.filter((n) => n.pinned);
-  const otherNotes = notes.filter((n) => !n.pinned);
+  const sortedNotes = [...notes].sort((a, b) =>
+    a.pinned === b.pinned ? 0 : a.pinned ? -1 : 1
+  );
 
   if (isPending) {
     return (
@@ -67,51 +83,17 @@ export function NotesList() {
         <NotesSearch value={searchInput} onChange={setSearchInput} />
       </div>
 
-      <div className="flex flex-col gap-8">
-        {pinnedNotes.length > 0 && (
-          <section>
-            <h2 className="mb-4 font-body text-sm font-bold text-gray-600">
-              Pinned
-            </h2>
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-6">
-              {pinnedNotes.map((note) => (
-                <div key={note.id} className="break-inside-avoid mb-6">
-                  <NoteRow
-                    note={note}
-                    isSelected={noteId === String(note.id)}
-                    categoryParam={categoryIdParam}
-                    onPinToggle={handlePinToggle}
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section>
-          <h2 className="mb-4 font-body text-sm font-bold text-gray-600">
-            Notes
-          </h2>
-          {otherNotes.length > 0 ? (
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-6">
-              {otherNotes.map((note) => (
-                <div key={note.id} className="break-inside-avoid mb-6">
-                  <NoteRow
-                    note={note}
-                    isSelected={noteId === String(note.id)}
-                    categoryParam={categoryIdParam}
-                    onPinToggle={handlePinToggle}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="rounded-card border border-dashed border-border py-12 text-center font-body text-sm text-gray-500">
-              No notes yet. Create one with the &quot;New Note&quot; button
-              above.
-            </p>
-          )}
-        </section>
+      <div className="columns-1 sm:columns-2 lg:columns-3 gap-6">
+        {sortedNotes.map((note) => (
+          <div key={note.id} className="break-inside-avoid mb-6">
+            <NoteRow
+              note={note}
+              isSelected={noteId === String(note.id)}
+              categoryParam={categoryIdParam}
+              onPinToggle={handlePinToggle}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

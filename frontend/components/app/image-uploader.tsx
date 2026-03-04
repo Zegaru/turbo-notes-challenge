@@ -99,7 +99,7 @@ export function ImageUploader({
                 inputRef.current?.click();
               }
             }}
-            className={`flex h-24 w-24 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-sm border border-dashed transition-colors bg-gray-100/60 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#FDFBF7] ${
+            className={`flex h-24 w-24 p-1 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-sm border border-dashed transition-colors bg-gray-100/60 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#FDFBF7] ${
               dragOver ? "border-accent bg-hover" : "border-black/15"
             }`}
             onDragOver={handleDragOver}
@@ -123,7 +123,7 @@ export function ImageUploader({
                 e.stopPropagation();
                 inputRef.current?.click();
               }}
-              className="h-7 rounded-sm bg-black/5 px-3 text-[10px] font-medium tracking-widest text-gray-600 uppercase hover:bg-black/10 hover:text-black"
+              className="h-7 rounded-sm bg-black/5 px-2! text-[10px] font-medium tracking-widest text-gray-600 uppercase hover:bg-black/10 hover:text-black"
             >
               {uploading ? "Uploading…" : "Add image"}
             </Button>

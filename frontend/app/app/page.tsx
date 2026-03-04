@@ -26,7 +26,7 @@ function AppContent() {
 
   return (
     <div className="relative flex h-full flex-col px-8 py-10">
-      <div className="mb-8 flex items-center justify-end">
+      <div className="mb-4 flex items-center justify-end">
         <Button
           variant="primary"
           size="lg"

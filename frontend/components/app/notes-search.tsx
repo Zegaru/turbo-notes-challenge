@@ -6,14 +6,18 @@ type NotesSearchProps = {
   placeholder?: string;
 };
 
-export function NotesSearch({ value, onChange, placeholder = "Search notes…" }: NotesSearchProps) {
+export function NotesSearch({
+  value,
+  onChange,
+  placeholder = "Search your thoughts...",
+}: NotesSearchProps) {
   return (
     <input
       type="search"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full rounded-chip border border-border bg-bg px-4 py-2 font-body text-sm outline-none placeholder:text-gray-500 focus:ring-2 focus:ring-accent/30"
+      className="w-full  border-0 border-b border-border/40 bg-transparent px-0 py-4 font-body text-base outline-none transition-[border-color,box-shadow] placeholder:font-heading placeholder:text-2xl placeholder:italic placeholder:text-[#6E7F91] focus:border-accent/60 focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-accent)]"
     />
   );
 }
