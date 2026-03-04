@@ -23,6 +23,7 @@ import { ImageUploader } from "@/components/app/image-uploader";
 import { ImagesPanel } from "@/components/app/images-panel";
 import { MarkdownPreview } from "@/components/app/markdown-preview";
 import { SaveStatus } from "@/components/app/save-status";
+import { VoiceInput } from "@/components/ui/voice-input";
 
 const DEFAULT_CARD_CLASS = "bg-note-orange-card border-note-orange";
 
@@ -463,6 +464,16 @@ function NoteEditorForm({
           imageUrl={previewImageUrl}
         />
       </div>
+
+      {!showViewMode && (
+        <VoiceInput
+          onTranscript={(text) =>
+            setContent((prev) => prev + (prev ? " " : "") + text)
+          }
+          disabled={saveStatus === "saving"}
+          className="absolute bottom-6 right-6 z-50 origin-bottom-right sm:bottom-8 sm:right-8"
+        />
+      )}
     </div>
   );
 }
