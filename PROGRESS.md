@@ -8,9 +8,9 @@
 | Database            | Done        |
 | Authentication      | Done        |
 | Authorization       | Done        |
-| Testing             | In Progress |
-| Categories          | In Progress |
-| Notes               | In Progress |
+| Testing             | Done        |
+| Categories          | Done        |
+| Notes               | Done        |
 | Deployment          | In Progress |
 | Documentation       | In Progress |
 | CI/CD               | In Progress |
