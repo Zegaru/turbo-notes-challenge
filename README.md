@@ -325,3 +325,97 @@ Pre-push runs:
 
 - pytest
 - type checking
+
+---
+
+# Deployment
+
+The application is deployed using a split frontend/backend architecture.
+
+## Live Demo
+
+| Link | URL |
+| ---- | --- |
+| Frontend | https://notes.zegaru.com |
+| API Docs | https://api.notes.zegaru.com/api/docs/ |
+
+---
+
+## Frontend
+
+The frontend is deployed on **Netlify**.
+
+Build settings:
+
+```
+Base directory: frontend
+Build command: pnpm build
+Publish directory: out
+```
+
+Environment variables:
+
+```
+NEXT_PUBLIC_API_BASE_URL=https://api.notes.zegaru.com
+```
+
+---
+
+## Backend
+
+The backend is deployed on a **VPS using Coolify** with Docker Compose.
+
+Service architecture:
+
+```
+Internet
+   ↓
+Coolify / Traefik (HTTPS)
+   ↓
+Django + Gunicorn container (port 8000)
+   ↓
+PostgreSQL container
+```
+
+Domain:
+
+```
+https://api.notes.zegaru.com
+```
+
+The backend runs using:
+
+```
+gunicorn config.wsgi:application --bind 0.0.0.0:8000
+```
+
+Database and media storage are persisted using Docker volumes.
+
+---
+
+## DNS
+
+**Frontend (Netlify):**
+
+```
+notes.zegaru.com   → CNAME → notes-turbo.netlify.app
+www.notes.zegaru.com → CNAME → notes-turbo.netlify.app
+```
+
+**Backend (Coolify):**
+
+```
+api.notes.zegaru.com → A record → VPS public IP
+```
+
+HTTPS certificates are automatically managed by Netlify (frontend) and Coolify (backend) using Let's Encrypt.
+
+---
+
+## API Docs
+
+Once deployed, the API documentation is available at:
+
+```
+https://api.notes.zegaru.com/api/docs/
+```
