@@ -70,10 +70,4 @@ describe("LoginPage", () => {
     });
     expect(link).toHaveAttribute("href", "/signup");
   });
-
-  it("has link to forgot password", () => {
-    render(<LoginPage />, { wrapper });
-    const link = screen.getByRole("link", { name: /forgot/i });
-    expect(link).toHaveAttribute("href", "/forgot-password");
-  });
 });

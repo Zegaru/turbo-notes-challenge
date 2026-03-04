@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { DrawerPreview as Drawer } from "@base-ui/react/drawer";
+import { AppLogo } from "@/components/ui/app-logo";
 import { CategoryList } from "./category-list";
 import { NewCategoryRow } from "./new-category-row";
 
@@ -34,6 +35,9 @@ export function CategoriesSheet({ open, onOpenChange }: CategoriesSheetProps) {
               className="mb-4 h-1 w-12 mx-auto rounded-full bg-border/40"
               aria-hidden
             />
+            <div className="mb-4 flex justify-center">
+              <AppLogo size="sm" showText />
+            </div>
             <Drawer.Content className="scrollbar mx-auto w-full max-w-lg">
               <nav className="flex flex-col gap-6">
                 <CategoryList />

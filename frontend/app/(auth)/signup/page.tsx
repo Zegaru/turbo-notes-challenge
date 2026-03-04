@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { AppLogo } from "@/components/ui/app-logo";
 import { useSignupMutation } from "@/lib/auth-queries";
 
 const schema = z.object({
@@ -30,13 +30,9 @@ export default function SignupPage() {
   return (
     <main id="main" className="flex min-h-screen items-center justify-center bg-bg p-4">
       <div className="w-full max-w-sm text-center">
-        <Image
-          src="/images/cat.png"
-          alt=""
-          width={200}
-          height={200}
-          className="mx-auto"
-        />
+        <div className="flex justify-center">
+          <AppLogo size="xl" />
+        </div>
         <h1 className="mt-4 text-2xl font-heading font-bold text-border">
           Yay, New Friend!
         </h1>

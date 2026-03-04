@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { AppLogo } from "@/components/ui/app-logo";
 import { isAuthenticated } from "@/lib/auth-store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -117,192 +118,210 @@ export default function Home() {
 
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-0">
           <div className="lg:flex lg:min-h-screen lg:items-center">
-          {/* Left Column: Hero Copy */}
-          <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:shrink-0 pt-16 lg:pt-0">
-            <div
-              className="animate-reveal-up"
-              style={{ animationDelay: "0.1s" }}
-            >
-              <span className="inline-flex items-center gap-2 rounded-full border border-border/30 bg-white/50 px-3 py-1 text-sm font-body text-accent backdrop-blur-sm shadow-sm">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-note-orange opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-note-orange"></span>
+            {/* Left Column: Hero Copy */}
+            <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:shrink-0 pt-16 lg:pt-0">
+              <div
+                className="flex justify-center lg:justify-start animate-reveal-up"
+                style={{ animationDelay: "0.05s" }}
+              >
+                <AppLogo size="lg" />
+              </div>
+              <div
+                className="mt-6 animate-reveal-up"
+                style={{ animationDelay: "0.1s" }}
+              >
+                <span className="inline-flex items-center gap-2 rounded-full border border-border/30 bg-white/50 px-3 py-1 text-sm font-body text-accent backdrop-blur-sm shadow-sm">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-note-orange opacity-75"></span>
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-note-orange"></span>
+                  </span>
+                  v1.0 is live
                 </span>
-                v1.0 is live
-              </span>
-            </div>
+              </div>
 
-            <h1
-              className="mt-8 font-heading text-5xl font-bold tracking-tight text-gray-900 sm:text-7xl animate-reveal-up"
-              style={{ animationDelay: "0.2s" }}
-            >
-              Thoughts, <br />
-              <span className="relative whitespace-nowrap">
-                <span className="relative z-10 italic text-accent pr-4">
-                  beautifully
+              <h1
+                className="mt-8 font-heading text-5xl font-bold tracking-tight text-gray-900 sm:text-7xl animate-reveal-up"
+                style={{ animationDelay: "0.2s" }}
+              >
+                Thoughts, <br />
+                <span className="relative whitespace-nowrap">
+                  <span className="relative z-10 italic text-accent pr-4">
+                    beautifully
+                  </span>
+                  <span className="absolute bottom-2 left-0 -z-10 h-4 w-full bg-note-yellow/60 -rotate-1 rounded-sm"></span>
                 </span>
-                <span className="absolute bottom-2 left-0 -z-10 h-4 w-full bg-note-yellow/60 -rotate-1 rounded-sm"></span>
-              </span>
-              <br /> captured.
-            </h1>
+                <br /> captured.
+              </h1>
 
-            <p
-              className="mt-6 text-lg leading-relaxed font-body text-gray-700 sm:max-w-md animate-reveal-up"
-              style={{ animationDelay: "0.3s" }}
-            >
-              A note-taking experience that feels like your favorite notebook.
-              Organize with ease, write in markdown, and let AI handle the
-              categorization.
-            </p>
+              <p
+                className="mt-6 text-lg leading-relaxed font-body text-gray-700 sm:max-w-md animate-reveal-up"
+                style={{ animationDelay: "0.3s" }}
+              >
+                A note-taking experience that feels like your favorite notebook.
+                Organize with ease, write in markdown, and let AI handle the
+                categorization.
+              </p>
 
-            <div
-              className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-reveal-up"
-              style={{ animationDelay: "0.4s" }}
-            >
-              {showOpenApp ? (
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={handleOpenApp}
-                  className="group relative overflow-hidden text-base w-full sm:w-auto"
-                >
-                  <span className="relative z-10">Open Notebook</span>
-                </Button>
-              ) : (
-                <>
-                  <Link href="/signup">
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      className="group text-base w-full sm:w-auto"
+              <div
+                className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-reveal-up"
+                style={{ animationDelay: "0.4s" }}
+              >
+                {showOpenApp ? (
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={handleOpenApp}
+                    className="group relative overflow-hidden text-base w-full sm:w-auto"
+                  >
+                    <span className="relative z-10">Open Notebook</span>
+                  </Button>
+                ) : (
+                  <>
+                    <Link href="/signup">
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        className="group text-base w-full sm:w-auto"
+                      >
+                        Start Writing
+                      </Button>
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="group flex items-center gap-2 font-body text-sm font-medium text-gray-700 hover:text-accent transition-colors px-4 py-3 rounded focus-ring"
                     >
-                      Start Writing
-                    </Button>
-                  </Link>
-                  <Link
-                    href="/login"
-                    className="group flex items-center gap-2 font-body text-sm font-medium text-gray-700 hover:text-accent transition-colors px-4 py-3 rounded focus-ring"
-                  >
-                    Sign in
-                    <span className="transition-transform group-hover:translate-x-1">
-                      →
-                    </span>
-                  </Link>
-                </>
-              )}
-            </div>
+                      Sign in
+                      <span className="transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
+                    </Link>
+                  </>
+                )}
+              </div>
 
-            <div
-              className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 animate-reveal-up"
-              style={{ animationDelay: "0.5s" }}
-            >
-              <Link
-                href="/readme"
-                className="inline-flex items-center gap-2 text-sm font-body text-gray-500 hover:text-gray-900 transition-colors rounded focus-ring px-1 -mx-1"
+              <div
+                className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 animate-reveal-up"
+                style={{ animationDelay: "0.5s" }}
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <Link
+                  href="/readme"
+                  className="inline-flex items-center gap-2 text-sm font-body text-gray-500 hover:text-gray-900 transition-colors rounded focus-ring px-1 -mx-1"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V"
-                  ></path>
-                </svg>
-                Read the Documentation
-              </Link>
-              <a
-                href="#tech-stack"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById("tech-stack")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="inline-flex items-center gap-2 text-sm font-body text-gray-500 hover:text-gray-900 transition-colors rounded focus-ring px-1 -mx-1"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                Tech Stack
-              </a>
-            </div>
-          </div>
-
-          {/* Right Column: Floating Notes Board */}
-          <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32 items-center justify-center relative w-full lg:w-[600px] h-[600px] lg:h-[700px]">
-            <div className="relative w-full h-full">
-              {FEATURES.map((feature) => (
-                <div
-                  key={feature.id}
-                  className={`absolute w-64 sm:w-72 transition-all duration-500 hover:z-50 hover:scale-105 animate-reveal-card ${feature.position} ${feature.rotation}`}
-                  style={{
-                    zIndex: feature.zIndex,
-                    animationDelay: feature.delay,
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V"
+                    ></path>
+                  </svg>
+                  Read the Documentation
+                </Link>
+                <a
+                  href="#tech-stack"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document
+                      .getElementById("tech-stack")
+                      ?.scrollIntoView({ behavior: "smooth" });
                   }}
+                  className="inline-flex items-center gap-2 text-sm font-body text-gray-500 hover:text-gray-900 transition-colors rounded focus-ring px-1 -mx-1"
                 >
-                  <div
-                    className={`group relative block rounded-2xl border-2 p-5 font-body shadow-[0_8px_30px_rgb(0,0,0,0.08)] ${feature.color} ${feature.borderColor}`}
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {/* Subtle paper overlay */}
-                    <div
-                      className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-linear-to-br from-white/60 via-transparent to-black/5 opacity-80"
-                      aria-hidden="true"
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                     />
+                  </svg>
+                  Tech Stack
+                </a>
+              </div>
+            </div>
 
-                    {/* Tape accessory */}
-                    {feature.tape && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-white/40 backdrop-blur-sm border border-white/30 -rotate-2 z-20 shadow-sm" />
-                    )}
+            {/* Right Column: Floating Notes Board */}
+            <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32 items-center justify-center relative w-full lg:w-[600px] h-[600px] lg:h-[700px]">
+              <div className="relative w-full h-full">
+                {FEATURES.map((feature) => (
+                  <div
+                    key={feature.id}
+                    className={`absolute w-64 sm:w-72 transition-all duration-500 hover:z-50 hover:scale-105 animate-reveal-card ${feature.position} ${feature.rotation}`}
+                    style={{
+                      zIndex: feature.zIndex,
+                      animationDelay: feature.delay,
+                    }}
+                  >
+                    <div
+                      className={`group relative block rounded-2xl border-2 p-5 font-body shadow-[0_8px_30px_rgb(0,0,0,0.08)] ${feature.color} ${feature.borderColor}`}
+                    >
+                      {/* Subtle paper overlay */}
+                      <div
+                        className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-linear-to-br from-white/60 via-transparent to-black/5 opacity-80"
+                        aria-hidden="true"
+                      />
 
-                    <div className="relative z-10 flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        <div className="text-xs flex items-center gap-2 mb-3">
-                          <span className="font-bold text-black/70">
-                            {feature.date}
-                          </span>
-                          <span className="text-black/30">•</span>
-                          <span className="text-black/60">
-                            {feature.category}
-                          </span>
-                        </div>
-                        <h3 className="font-heading text-xl text-black/90 font-bold mb-2">
-                          {feature.title}
-                        </h3>
-                        {feature.id === "markdown" ? (
-                          <div className="text-sm text-black/80 leading-relaxed">
-                            <MarkdownPreview
-                              content={feature.content}
-                              className="[&_p]:mb-1 [&_pre]:mt-2 [&_pre]:p-2 [&_code]:text-xs [&_pre]:bg-white/50 [&_pre]:border [&_pre]:border-black/10"
-                            />
+                      {/* Tape accessory */}
+                      {feature.tape && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-white/40 backdrop-blur-sm border border-white/30 -rotate-2 z-20 shadow-sm" />
+                      )}
+
+                      <div className="relative z-10 flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs flex items-center gap-2 mb-3">
+                            <span className="font-bold text-black/70">
+                              {feature.date}
+                            </span>
+                            <span className="text-black/30">•</span>
+                            <span className="text-black/60">
+                              {feature.category}
+                            </span>
                           </div>
-                        ) : (
-                          <div className="text-sm text-black/70 leading-relaxed whitespace-pre-wrap">
-                            {feature.content}
+                          <h3 className="font-heading text-xl text-black/90 font-bold mb-2">
+                            {feature.title}
+                          </h3>
+                          {feature.id === "markdown" ? (
+                            <div className="text-sm text-black/80 leading-relaxed">
+                              <MarkdownPreview
+                                content={feature.content}
+                                className="[&_p]:mb-1 [&_pre]:mt-2 [&_pre]:p-2 [&_code]:text-xs [&_pre]:bg-white/50 [&_pre]:border [&_pre]:border-black/10"
+                              />
+                            </div>
+                          ) : (
+                            <div className="text-sm text-black/70 leading-relaxed whitespace-pre-wrap">
+                              {feature.content}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* App-style Pin */}
+                        {feature.pin && (
+                          <div className="shrink-0 p-1 text-black">
+                            <svg
+                              className="h-5 w-5"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                            </svg>
                           </div>
                         )}
                       </div>
-
-                      {/* App-style Pin */}
-                      {feature.pin && (
-                        <div className="shrink-0 p-1 text-black">
-                          <svg
-                            className="h-5 w-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
-                          </svg>
-                        </div>
-                      )}
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
           </div>
 
           {/* Tech Stack */}
@@ -353,7 +372,12 @@ export default function Home() {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
               </svg>
             </a>
           </footer>

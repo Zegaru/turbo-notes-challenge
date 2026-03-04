@@ -72,9 +72,14 @@ export function BottomNav() {
           type="button"
           onClick={() => createNote()}
           disabled={isPending}
-          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs font-medium text-white bg-accent hover:bg-accent/90 disabled:opacity-50 transition-colors min-w-0 rounded focus-ring"
+          className="flex flex-1 flex-col items-center gap-1 my-2 py-2 px-2 font-body text-xs font-medium text-white bg-accent hover:bg-accent/90 disabled:opacity-50 transition-colors min-w-0 rounded focus-ring"
         >
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

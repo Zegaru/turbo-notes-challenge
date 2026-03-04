@@ -7,6 +7,7 @@ import { useCategoriesQuery } from "@/lib/categories-queries";
 import { parseSearchQuery } from "@/lib/parse-search-query";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { AppLogo } from "@/components/ui/app-logo";
 import { NotesSearch } from "./notes-search";
 import { NoteRow } from "./note-row";
 
@@ -106,6 +107,9 @@ export function NotesList() {
             </>
           ) : (
             <>
+              <div className="mb-4 flex justify-center">
+                <AppLogo size="sm" showText />
+              </div>
               <Image
                 src="/images/empty_state.png"
                 alt="No notes yet"
