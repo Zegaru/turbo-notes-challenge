@@ -114,7 +114,9 @@ after starting PostgreSQL.
 # API
 
 Interactive API docs:
-[http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
+
+- Local: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
+- Production: [https://api.notes.zegaru.com/api/docs/](https://api.notes.zegaru.com/api/docs/)
 
 Schema: `/api/schema/`
 

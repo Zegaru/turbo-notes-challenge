@@ -107,9 +107,6 @@ export function NotesList() {
             </>
           ) : (
             <>
-              <div className="mb-4 flex justify-center">
-                <AppLogo size="sm" showText />
-              </div>
               <Image
                 src="/images/empty_state.png"
                 alt="No notes yet"
@@ -143,8 +140,7 @@ export function NotesList() {
           <button
             type="button"
             onClick={() =>
-              pinMutation.variables &&
-              pinMutation.mutate(pinMutation.variables)
+              pinMutation.variables && pinMutation.mutate(pinMutation.variables)
             }
             className="text-sm text-accent hover:underline rounded focus-ring px-1 -mx-1"
           >
@@ -161,8 +157,7 @@ export function NotesList() {
               categoryParam={categoryIdParam}
               onPinToggle={handlePinToggle}
               isPinning={
-                pinMutation.isPending &&
-                pinMutation.variables?.id === note.id
+                pinMutation.isPending && pinMutation.variables?.id === note.id
               }
             />
           </div>
