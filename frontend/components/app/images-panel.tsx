@@ -37,7 +37,7 @@ export function ImagesPanel({
             key={img.id}
             className={`group relative transition-all duration-300 hover:z-10 hover:-translate-y-1 hover:scale-105 ${ROTATIONS[i % ROTATIONS.length]}`}
           >
-            <div className="relative rounded-sm border border-black/5 bg-[#FDFBF7] p-2.5 pb-12 shadow-[0_2px_10px_rgba(0,0,0,0.08),_0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 group-hover:shadow-[0_12px_30px_rgba(0,0,0,0.12),_0_4px_10px_rgba(0,0,0,0.06)]">
+            <div className="relative rounded-sm border border-black/5 bg-[#FDFBF7] p-2.5 pb-12 shadow-[0_2px_10px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 group-hover:shadow-[0_12px_30px_rgba(0,0,0,0.12),0_4px_10px_rgba(0,0,0,0.06)]">
               <button
                 type="button"
                 onClick={() => onImageClick(img)}
@@ -47,7 +47,7 @@ export function ImagesPanel({
                 <img
                   src={img.url}
                   alt=""
-                  className="h-32 w-32 object-cover transition-all duration-500 filter brightness-95 contrast-[1.1] sepia-[0.2] group-hover:brightness-100 group-hover:contrast-100 group-hover:sepia-0"
+                  className={`object-cover transition-all duration-500 filter brightness-95 contrast-[1.1] sepia-[0.2] group-hover:brightness-100 group-hover:contrast-100 group-hover:sepia-0 ${ROTATIONS[i % ROTATIONS.length]} ${canInsert ? "h-24 w-24" : "h-32 w-32"}`}
                 />
               </button>
 

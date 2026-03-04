@@ -1,14 +1,18 @@
 "use client";
 
 import {
-  categoriesApi,
   colorToCardClass,
-  notesApi,
   type CategoryColor,
   type Note,
 } from "@/lib/api-client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useCategoriesQuery } from "@/lib/categories-queries";
+import { formatDate } from "@/lib/format-date";
+import { useCreateNoteMutation, useNoteQuery } from "@/lib/notes-queries";
+import { noteKeys, notesKeys } from "@/lib/query-keys";
+import { useAppSearchParams } from "@/lib/use-app-search-params";
+import { useNoteAutosave } from "@/lib/use-note-autosave";
+import { useSuggestCategory } from "@/lib/use-suggest-category";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -17,37 +21,9 @@ import { ImageModal } from "@/components/app/image-modal";
 import { ImageUploader } from "@/components/app/image-uploader";
 import { ImagesPanel } from "@/components/app/images-panel";
 import { MarkdownPreview } from "@/components/app/markdown-preview";
-import { SaveStatus, type SaveStatusState } from "@/components/app/save-status";
+import { SaveStatus } from "@/components/app/save-status";
 
 const DEFAULT_CARD_CLASS = "bg-note-orange-card border-note-orange";
-const AUTOSAVE_DEBOUNCE_MS = 600;
-
-function formatDate(iso: string) {
-  const d = new Date(iso);
-  return (
-    d.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }) +
-    " at " +
-    d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
-  );
-}
-
-type SavedPayload = {
-  title: string;
-  content: string;
-  categoryId: string | null;
-};
-
-function payloadEqual(a: SavedPayload, b: SavedPayload): boolean {
-  return (
-    a.title === b.title &&
-    a.content === b.content &&
-    (a.categoryId ?? "none") === (b.categoryId ?? "none")
-  );
-}
 
 type NoteEditorFormProps = {
   note: Note | null;
@@ -63,9 +39,7 @@ function NoteEditorForm({
   initialEditMode,
 }: NoteEditorFormProps) {
   const queryClient = useQueryClient();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const { setEditInUrl, closeHref } = useAppSearchParams();
 
   const [isEditing, setIsEditing] = useState(initialEditMode);
   const [title, setTitle] = useState(note?.title ?? "");
@@ -76,192 +50,46 @@ function NoteEditorForm({
   const [contentMode, setContentMode] = useState<"edit" | "preview" | "split">(
     "split"
   );
-  const [saveStatus, setSaveStatus] = useState<SaveStatusState>("idle");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [suggestion, setSuggestion] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
   const pendingFocusRef = useRef<"title" | "content" | null>(null);
-  const lastSavedRef = useRef<SavedPayload>({
-    title: note?.title ?? "",
-    content: note?.content ?? "",
-    categoryId:
-      note?.category != null
-        ? String(note.category)
-        : (categoryIdParam ?? null),
+
+  const { data: categories = [] } = useCategoriesQuery();
+  const { suggestion, suggestMutation, applySuggestion } = useSuggestCategory();
+
+  const {
+    saveStatus,
+    errorMessage: autosaveErrorMessage,
+    clearError: clearAutosaveError,
+  } = useNoteAutosave({
+    noteId,
+    title,
+    content,
+    categoryId,
+    pinned: note?.pinned ?? false,
+    note,
+    categoryIdParam,
+    isEditing,
   });
 
-  const { data: categories = [] } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => categoriesApi.list(),
+  const createMutation = useCreateNoteMutation({
+    redirectToCategory: categoryIdParam,
   });
 
-  const suggestMutation = useMutation({
-    mutationFn: (data: { title?: string; content?: string }) =>
-      notesApi.suggestCategory(data),
-    onSuccess: (data) => {
-      if (data.suggested_category_id != null && data.suggested_category_name) {
-        setSuggestion({
-          id: data.suggested_category_id,
-          name: data.suggested_category_name,
-        });
-      } else {
-        setSuggestion(null);
-      }
-    },
-    onError: () => setSuggestion(null),
-  });
+  const createErrorMessage = createMutation.error?.message ?? null;
+  const errorMessage = autosaveErrorMessage ?? createErrorMessage;
 
-  const applySuggestion = useCallback(() => {
-    if (suggestion) {
-      setCategoryId(String(suggestion.id));
-      setSuggestion(null);
-    }
-  }, [suggestion]);
+  const handleApplySuggestion = useCallback(() => {
+    const id = applySuggestion();
+    if (id != null) setCategoryId(String(id));
+  }, [applySuggestion]);
 
-  const scheduleAutosave = useCallback(() => {
-    if (!noteId) return;
-
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    debounceRef.current = setTimeout(() => {
-      debounceRef.current = null;
-
-      const payload: SavedPayload = {
-        title: title.trim(),
-        content: content.trim(),
-        categoryId: categoryId && categoryId !== "none" ? categoryId : null,
-      };
-
-      if (payloadEqual(payload, lastSavedRef.current)) return;
-
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
-      setSaveStatus("saving");
-      setErrorMessage(null);
-
-      notesApi
-        .update(
-          Number(noteId),
-          {
-            title: payload.title,
-            content: payload.content,
-            category: payload.categoryId ? Number(payload.categoryId) : null,
-            pinned: note?.pinned ?? false,
-            draft: false,
-          },
-          { signal: controller.signal }
-        )
-        .then((updatedNote) => {
-          lastSavedRef.current = payload;
-          setSaveStatus("saved");
-          setErrorMessage(null);
-          queryClient.setQueryData(["note", noteId], updatedNote);
-          queryClient.setQueriesData(
-            { queryKey: ["notes"] },
-            (oldData: Note[] | undefined, query?: { queryKey: unknown[] }) => {
-              if (!oldData) return oldData;
-              const categoryFilter = query?.queryKey?.[1] as string | undefined;
-              const noteMatchesFilter =
-                !categoryFilter ||
-                categoryFilter === "all" ||
-                String(updatedNote.category) === categoryFilter;
-              const idx = oldData.findIndex((n) => n.id === updatedNote.id);
-              if (idx >= 0) {
-                if (noteMatchesFilter) {
-                  const next = [...oldData];
-                  next[idx] = updatedNote;
-                  return next;
-                }
-                return oldData.filter((n) => n.id !== updatedNote.id);
-              }
-              if (noteMatchesFilter) return [...oldData, updatedNote];
-              return oldData;
-            }
-          );
-          const t = setTimeout(() => setSaveStatus("idle"), 2000);
-          return () => clearTimeout(t);
-        })
-        .catch((e) => {
-          if (e?.name === "AbortError") return;
-          setSaveStatus("error");
-          setErrorMessage(
-            e instanceof Error ? e.message : "Failed to save note"
-          );
-        })
-        .finally(() => {
-          if (abortControllerRef.current === controller) {
-            abortControllerRef.current = null;
-          }
-        });
-    }, AUTOSAVE_DEBOUNCE_MS);
-  }, [noteId, title, content, categoryId, note?.pinned, queryClient]);
-
-  useEffect(() => {
-    if (noteId && isEditing) {
-      scheduleAutosave();
-    }
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      if (abortControllerRef.current) abortControllerRef.current.abort();
-    };
-  }, [noteId, isEditing, scheduleAutosave]);
-
-  useEffect(() => {
-    lastSavedRef.current = {
-      title: note?.title ?? "",
-      content: note?.content ?? "",
-      categoryId:
-        note?.category != null
-          ? String(note.category)
-          : (categoryIdParam ?? null),
-    };
-  }, [note?.title, note?.content, note?.category, categoryIdParam]);
-
-  const createMutation = useMutation({
-    mutationFn: (data: {
-      title: string;
-      content: string;
-      category: number | null;
-      pinned: boolean;
-    }) => notesApi.create(data),
-    onMutate: () => setErrorMessage(null),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      router.push(
-        categoryIdParam ? `/app?category=${categoryIdParam}` : "/app"
-      );
-    },
-    onError: (e) => {
-      setErrorMessage(e instanceof Error ? e.message : "Failed to create note");
-    },
-  });
-
-  const handleCreateSubmit = () => {
-    const payload = {
-      title: title.trim(),
-      content: content.trim(),
-      category: categoryId && categoryId !== "none" ? Number(categoryId) : null,
-      pinned: note?.pinned ?? false,
-      draft: false,
-    };
-    createMutation.mutate(payload);
-  };
-
-  const handleFieldChange = useCallback((clearError = true) => {
-    if (clearError) setErrorMessage(null);
-  }, []);
+  const handleFieldChange = useCallback(() => {
+    clearAutosaveError();
+    createMutation.reset();
+  }, [clearAutosaveError, createMutation]);
 
   const isCreatePending = createMutation.isPending;
   const resolvedColor =
@@ -273,10 +101,6 @@ function NoteEditorForm({
     resolvedColor && resolvedColor in colorToCardClass
       ? colorToCardClass[resolvedColor as CategoryColor]
       : DEFAULT_CARD_CLASS;
-
-  const closeHref = categoryIdParam
-    ? `/app?category=${categoryIdParam}`
-    : "/app";
 
   const hasTitleOrContent =
     (title?.trim()?.length ?? 0) > 0 || (content?.trim()?.length ?? 0) > 0;
@@ -293,16 +117,9 @@ function NoteEditorForm({
         pendingFocusRef.current = focusField;
       }
       setIsEditing(edit);
-      const params = new URLSearchParams(searchParams.toString());
-      if (edit) {
-        params.set("edit", "1");
-      } else {
-        params.delete("edit");
-      }
-      const qs = params.toString();
-      router.replace(pathname + (qs ? `?${qs}` : ""));
+      setEditInUrl(edit, focusField);
     },
-    [router, pathname, searchParams]
+    [setEditInUrl]
   );
 
   useEffect(() => {
@@ -341,13 +158,21 @@ function NoteEditorForm({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isEditing, noteId, setEditMode]);
 
+  const handleCreateSubmit = () => {
+    createMutation.mutate({
+      title: title.trim(),
+      content: content.trim(),
+      category: categoryId && categoryId !== "none" ? Number(categoryId) : null,
+      pinned: note?.pinned ?? false,
+    });
+  };
+
   const showViewMode = noteId && !isEditing;
 
   return (
     <div
       className={`relative flex h-full min-h-0 w-full flex-col rounded-2xl border-2 transition-shadow duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.04),0_1px_4px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.04)] ${bgClass}`}
     >
-      {/* Subtle overlay to simulate paper surface/lighting */}
       <div
         className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-linear-to-br from-white/50 via-transparent to-black/5"
         aria-hidden="true"
@@ -385,7 +210,7 @@ function NoteEditorForm({
                   {suggestion.name}
                   <button
                     type="button"
-                    onClick={applySuggestion}
+                    onClick={handleApplySuggestion}
                     className="text-accent hover:underline"
                   >
                     Apply
@@ -471,9 +296,9 @@ function NoteEditorForm({
         </div>
       </div>
 
-      <div className="scrollbar relative z-10 flex-1 min-h-0 overflow-y-auto p-12 pt-6">
-        <div className="flex min-h-min flex-col">
-          <div className="flex justify-end mb-2">
+      <div className="scrollbar relative z-10 flex-1 min-h-0 overflow-y-auto p-12 pt-2 h-full">
+        <div className="flex min-h-min flex-col h-full">
+          <div className="flex justify-end ">
             <span className="text-sm text-gray-600 font-body">
               {note?.updated_at
                 ? `Last Edited: ${formatDate(note.updated_at)}`
@@ -495,9 +320,11 @@ function NoteEditorForm({
                     currentCount={note?.images?.length ?? 0}
                     onUploadSuccess={() => {
                       queryClient.invalidateQueries({
-                        queryKey: ["note", noteId],
+                        queryKey: noteKeys.detail(noteId),
                       });
-                      queryClient.invalidateQueries({ queryKey: ["notes"] });
+                      queryClient.invalidateQueries({
+                        queryKey: notesKeys.all,
+                      });
                     }}
                   />
                 ) : null
@@ -619,18 +446,11 @@ function NoteEditorForm({
 }
 
 export function NoteEditor() {
-  const searchParams = useSearchParams();
-  const noteId = searchParams.get("note");
-  const categoryIdParam = searchParams.get("category");
-  const editParam = searchParams.get("edit");
+  const { noteId, categoryIdParam, editParam } = useAppSearchParams();
+  const { data: note, isPending: noteLoading } = useNoteQuery(noteId);
 
-  const initialEditMode = !noteId || editParam === "1";
-
-  const { data: note, isPending: noteLoading } = useQuery({
-    queryKey: ["note", noteId],
-    queryFn: () => notesApi.get(Number(noteId!)),
-    enabled: !!noteId,
-  });
+  const initialEditMode =
+    (note?.content?.trim()?.length ?? 0) === 0 || editParam === "1";
 
   if (noteId && noteLoading) {
     return (

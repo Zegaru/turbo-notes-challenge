@@ -1,39 +1,23 @@
 "use client";
 
-import { notesApi } from "@/lib/api-client";
 import { useDebouncedValue } from "@/lib/use-debounced-value";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { useNotesQuery, usePinMutation } from "@/lib/notes-queries";
+import { useAppSearchParams } from "@/lib/use-app-search-params";
 import { useState } from "react";
 import Image from "next/image";
 import { NotesSearch } from "./notes-search";
 import { NoteRow } from "./note-row";
 
 export function NotesList() {
-  const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
-  const categoryId = searchParams.get("category");
-  const noteId = searchParams.get("note");
-
+  const { noteId, categoryIdParam } = useAppSearchParams();
   const [searchInput, setSearchInput] = useState("");
   const debouncedSearch = useDebouncedValue(searchInput, 300);
 
-  const { data: notes = [], isPending } = useQuery({
-    queryKey: ["notes", categoryId ?? "all", debouncedSearch],
-    queryFn: () =>
-      notesApi.list({
-        categoryId: categoryId || undefined,
-        q: debouncedSearch || undefined,
-      }),
-  });
-
-  const pinMutation = useMutation({
-    mutationFn: ({ id, pinned }: { id: number; pinned: boolean }) =>
-      notesApi.update(id, { pinned }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
-  });
+  const { data: notes = [], isPending } = useNotesQuery(
+    categoryIdParam,
+    debouncedSearch
+  );
+  const pinMutation = usePinMutation();
 
   const handlePinToggle = (note: { id: number; pinned: boolean }) => {
     pinMutation.mutate({ id: note.id, pinned: !note.pinned });
@@ -95,7 +79,7 @@ export function NotesList() {
                   <NoteRow
                     note={note}
                     isSelected={noteId === String(note.id)}
-                    categoryParam={categoryId}
+                    categoryParam={categoryIdParam}
                     onPinToggle={handlePinToggle}
                   />
                 </div>
@@ -115,7 +99,7 @@ export function NotesList() {
                   <NoteRow
                     note={note}
                     isSelected={noteId === String(note.id)}
-                    categoryParam={categoryId}
+                    categoryParam={categoryIdParam}
                     onPinToggle={handlePinToggle}
                   />
                 </div>

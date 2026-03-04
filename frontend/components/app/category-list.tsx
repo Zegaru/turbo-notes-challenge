@@ -1,10 +1,9 @@
 "use client";
 
-import { categoriesApi } from "@/lib/api-client";
+import { useCategoriesQuery } from "@/lib/categories-queries";
 import { CategoryRow } from "./category-row";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 
 export function CategoryList() {
   const searchParams = useSearchParams();
@@ -15,10 +14,7 @@ export function CategoryList() {
     isPending,
     isError,
     refetch,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => categoriesApi.list(),
-  });
+  } = useCategoriesQuery();
 
   const baseHref = "/app";
 

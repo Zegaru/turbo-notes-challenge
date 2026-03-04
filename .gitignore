@@ -17,6 +17,7 @@ dist/
 build/
 *.egg-info/
 *.egg
+tsconfig.tsbuildinfo
 
 # IDE / OS
 .idea/

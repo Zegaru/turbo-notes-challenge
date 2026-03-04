@@ -1,9 +1,9 @@
 "use client";
 
 import { Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { notesApi } from "@/lib/api-client";
+import { useRouter } from "next/navigation";
+import { useCreateNoteMutation } from "@/lib/notes-queries";
+import { useAppSearchParams } from "@/lib/use-app-search-params";
 import { NotesList } from "@/components/app/notes-list";
 import { NoteEditor } from "@/components/app/note-editor";
 import {
@@ -15,29 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 
 function AppContent() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const categoryParam = searchParams.get("category");
-  const noteParam = searchParams.get("note");
-  const isEditing = noteParam !== null;
+  const { categoryIdParam, noteId, closeHref } = useAppSearchParams();
+  const isEditing = noteId !== null;
 
-  const closeHref = categoryParam ? `/app?category=${categoryParam}` : "/app";
-
-  const createMutation = useMutation({
-    mutationFn: () =>
-      notesApi.create({
-        title: "",
-        content: "",
-        pinned: false,
-        draft: true,
-        category: categoryParam ? Number(categoryParam) : null,
-      }),
-    onSuccess: (data) => {
-      const href = categoryParam
-        ? `/app?category=${categoryParam}&note=${data.id}`
-        : `/app?note=${data.id}`;
-      router.push(href);
-    },
+  const createMutation = useCreateNoteMutation({
+    draft: true,
+    categoryId: categoryIdParam,
   });
 
   return (

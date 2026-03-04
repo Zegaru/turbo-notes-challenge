@@ -1,20 +1,21 @@
 "use client";
 
 import {
-  categoriesApi,
   colorToDotClass,
   type Category,
   type CategoryColor,
 } from "@/lib/api-client";
+import {
+  useDeleteCategoryMutation,
+  useRenameCategoryMutation,
+} from "@/lib/categories-queries";
 import {
   Dialog,
   DialogPortal,
   DialogBackdrop,
   DialogPopup,
 } from "@/components/ui/dialog";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { InlineMessage } from "@/components/ui/inline-message";
 
@@ -28,15 +29,24 @@ export function CategoryRow({ category, isSelected, baseHref }: CategoryRowProps
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(category.name);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [renameError, setRenameError] = useState<string | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const queryClient = useQueryClient();
-  const router = useRouter();
+
+  const renameMutation = useRenameCategoryMutation({
+    category,
+    onSettled: () => setIsEditing(false),
+  });
+  const deleteMutation = useDeleteCategoryMutation({
+    category,
+    isSelected,
+    baseHref,
+    onSuccess: () => setDeleteOpen(false),
+  });
+
+  const renameError = renameMutation.error?.message ?? null;
+  const deleteError = deleteMutation.error?.message ?? null;
 
   const startEditing = useCallback(() => {
     setEditValue(category.name);
-    setRenameError(null);
     setIsEditing(true);
   }, [category.name]);
 
@@ -46,47 +56,6 @@ export function CategoryRow({ category, isSelected, baseHref }: CategoryRowProps
       inputRef.current?.select();
     }
   }, [isEditing]);
-
-  const renameMutation = useMutation({
-    mutationFn: (name: string) =>
-      categoriesApi.update(category.id, { name }),
-    onMutate: async (newName) => {
-      setRenameError(null);
-      await queryClient.cancelQueries({ queryKey: ["categories"] });
-      const prev = queryClient.getQueryData<Category[]>(["categories"]);
-      queryClient.setQueryData<Category[]>(["categories"], (old) =>
-        old?.map((c) =>
-          c.id === category.id ? { ...c, name: newName } : c
-        ) ?? []
-      );
-      return { prev };
-    },
-    onError: (e, _newName, ctx) => {
-      if (ctx?.prev) {
-        queryClient.setQueryData(["categories"], ctx.prev);
-      }
-      setRenameError(e instanceof Error ? e.message : "Failed to rename category");
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      setIsEditing(false);
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: () => categoriesApi.delete(category.id),
-    onMutate: () => setDeleteError(null),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      setDeleteOpen(false);
-      if (isSelected) {
-        router.push(baseHref);
-      }
-    },
-    onError: (e) => {
-      setDeleteError(e instanceof Error ? e.message : "Failed to delete category");
-    },
-  });
 
   const handleRenameSubmit = useCallback(() => {
     const trimmed = editValue.trim();
@@ -174,7 +143,7 @@ export function CategoryRow({ category, isSelected, baseHref }: CategoryRowProps
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
-          if (!open) setDeleteError(null);
+          if (!open) deleteMutation.reset();
         }}
       >
         <DialogPortal>

@@ -2,12 +2,10 @@
 
 import {
   CATEGORY_COLORS,
-  categoriesApi,
   colorToDotClass,
   type CategoryColor,
 } from "@/lib/api-client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useCreateCategoryMutation } from "@/lib/categories-queries";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { InlineMessage } from "@/components/ui/inline-message";
@@ -15,17 +13,11 @@ import { InlineMessage } from "@/components/ui/inline-message";
 export function NewCategoryRow() {
   const [name, setName] = useState("");
   const [color, setColor] = useState<CategoryColor>("orange");
-  const queryClient = useQueryClient();
-  const router = useRouter();
 
-  const createMutation = useMutation({
-    mutationFn: (data: { name: string; color: CategoryColor }) =>
-      categoriesApi.create(data),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+  const createMutation = useCreateCategoryMutation({
+    onSuccess: () => {
       setName("");
       setColor("orange");
-      router.push(`/app?category=${data.id}`);
     },
   });
 

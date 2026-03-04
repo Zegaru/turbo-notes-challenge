@@ -73,35 +73,68 @@ export function ImageUploader({
   return (
     <div className="flex flex-col gap-2">
       <div
-        className={`flex p-2 flex-col items-center gap-2 rounded-chip border border-dashed transition-colors bg-bg ${
-          dragOver ? "border-accent bg-hover" : "border-border"
-        } ${disabled ? "opacity-50" : ""}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        className={`group relative -rotate-1 transition-all duration-300 ${
+          disabled
+            ? "opacity-50"
+            : "hover:z-10 hover:-translate-y-1 hover:scale-105"
+        }`}
       >
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleChange}
-          disabled={disabled || uploading}
-        />
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          disabled={disabled || uploading}
-          onClick={() => inputRef.current?.click()}
+        <div
+          className={`relative rounded-sm border border-black/5 bg-[#FDFBF7] p-2.5 pb-12 shadow-[0_2px_10px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 ${
+            !disabled &&
+            "group-hover:shadow-[0_12px_30px_rgba(0,0,0,0.12),0_4px_10px_rgba(0,0,0,0.06)]"
+          }`}
         >
-          {uploading ? "Uploading…" : "Add image"}
-        </Button>
-        {currentCount > 0 && (
-          <span className="font-body text-sm text-gray-600">
-            {currentCount}/{MAX_IMAGES}
-          </span>
-        )}
+          <div
+            role="button"
+            tabIndex={disabled || uploading ? -1 : 0}
+            onClick={() => !disabled && !uploading && inputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (
+                (e.key === "Enter" || e.key === " ") &&
+                !disabled &&
+                !uploading
+              ) {
+                e.preventDefault();
+                inputRef.current?.click();
+              }
+            }}
+            className={`flex h-24 w-24 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-sm border border-dashed transition-colors bg-gray-100/60 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#FDFBF7] ${
+              dragOver ? "border-accent bg-hover" : "border-black/15"
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleChange}
+              disabled={disabled || uploading}
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              disabled={disabled || uploading}
+              onClick={(e) => {
+                e.stopPropagation();
+                inputRef.current?.click();
+              }}
+              className="h-7 rounded-sm bg-black/5 px-3 text-[10px] font-medium tracking-widest text-gray-600 uppercase hover:bg-black/10 hover:text-black"
+            >
+              {uploading ? "Uploading…" : "Add image"}
+            </Button>
+            <span className="text-[10px] text-gray-500">Click or drop</span>
+          </div>
+          <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center">
+            <span className="font-body text-[11px] text-gray-500">
+              {currentCount}/{MAX_IMAGES}
+            </span>
+          </div>
+        </div>
       </div>
       {progress != null && progress < 100 && (
         <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
