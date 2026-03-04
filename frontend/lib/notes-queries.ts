@@ -41,6 +41,29 @@ export function usePinMutation() {
   });
 }
 
+type DeleteNoteOptions = {
+  redirectOnSuccess?: string;
+  onSuccess?: () => void;
+};
+
+export function useDeleteNoteMutation(options?: DeleteNoteOptions) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { redirectOnSuccess, onSuccess } = options ?? {};
+
+  return useMutation({
+    mutationFn: (noteId: number) => notesApi.delete(noteId),
+    onSuccess: (_data, noteId) => {
+      queryClient.invalidateQueries({ queryKey: notesKeys.all });
+      queryClient.invalidateQueries({ queryKey: noteKeys.detail(String(noteId)) });
+      onSuccess?.();
+      if (redirectOnSuccess) {
+        router.push(redirectOnSuccess);
+      }
+    },
+  });
+}
+
 type CreateNotePayload = {
   title: string;
   content: string;

@@ -5,9 +5,18 @@ import {
   type CategoryColor,
   type Note,
 } from "@/lib/api-client";
+import { useDeleteNoteMutation } from "@/lib/notes-queries";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPortal,
+  DialogPopup,
+} from "@/components/ui/dialog";
+import { InlineMessage } from "@/components/ui/inline-message";
 import { MarkdownPreview } from "@/components/app/markdown-preview";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
+import { useState } from "react";
 
 const DEFAULT_CARD_CLASS = "bg-note-orange-card border-note-orange";
 
@@ -47,6 +56,13 @@ export function NoteRow({
   onPinToggle,
   isPinning = false,
 }: NoteRowProps) {
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const closeHref = categoryParam ? `/app?category=${categoryParam}` : "/app";
+  const deleteMutation = useDeleteNoteMutation({
+    redirectOnSuccess: isSelected ? closeHref : undefined,
+    onSuccess: () => setDeleteOpen(false),
+  });
+
   const href = categoryParam
     ? `/app?category=${categoryParam}&note=${note.id}`
     : `/app?note=${note.id}`;
@@ -81,44 +97,70 @@ export function NoteRow({
               <span className="text-gray-700">{note.category_name}</span>
             )}
 
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onPinToggle(note);
-              }}
-              disabled={isPinning}
-              className="shrink-0 p-1 ml-auto text-gray-600 hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed rounded focus-ring"
-              aria-label={note.pinned ? "Unpin note" : "Pin note"}
-              data-testid="note-pin-btn"
-            >
-              {isPinning ? (
-                <Spinner size="md" />
-              ) : note.pinned ? (
-                <svg
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
-                </svg>
-              ) : (
+            <div className="flex items-center gap-2 ml-auto">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setDeleteOpen(true);
+                }}
+                className="shrink-0 p-1 text-gray-600 opacity-50 hover:opacity-100 hover:text-red-600 rounded focus-ring transition-all duration-200"
+                aria-label="Delete note"
+              >
                 <svg
                   className="h-5 w-5"
                   fill="none"
-                  stroke="currentColor"
                   viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                   />
                 </svg>
-              )}
-            </button>
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onPinToggle(note);
+                }}
+                disabled={isPinning}
+                className="shrink-0 p-1 text-gray-600 hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed rounded focus-ring"
+                aria-label={note.pinned ? "Unpin note" : "Pin note"}
+                data-testid="note-pin-btn"
+              >
+                {isPinning ? (
+                  <Spinner size="md" />
+                ) : note.pinned ? (
+                  <svg
+                    className="h-5 w-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                  </svg>
+                ) : (
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
           <h3 className="mt-4 font-heading text-2xl text-black line-clamp-4">
             {note.title || "Untitled"}
@@ -155,6 +197,57 @@ export function NoteRow({
           )}
         </div>
       </div>
+
+      <Dialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          setDeleteOpen(open);
+          if (!open) deleteMutation.reset();
+        }}
+      >
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPopup>
+            <div
+              className="relative w-full max-w-md rounded-2xl border border-border bg-bg p-6 shadow-2xl pointer-events-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="font-body text-gray-900 mb-4">
+                Delete &quot;{note.title || "Untitled"}&quot;? This cannot be
+                undone.
+              </p>
+              {deleteMutation.error && (
+                <InlineMessage variant="error" className="mb-4">
+                  {deleteMutation.error.message}
+                </InlineMessage>
+              )}
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteOpen(false);
+                  }}
+                  className="rounded-chip border border-border px-4 py-2 font-body text-sm hover:bg-hover focus-ring"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteMutation.mutate(note.id);
+                  }}
+                  disabled={deleteMutation.isPending}
+                  className="rounded-chip border border-red-500 bg-red-500 px-4 py-2 font-body text-sm text-white hover:bg-red-600 disabled:opacity-50 focus-ring"
+                >
+                  {deleteMutation.isPending ? "Deleting…" : "Delete"}
+                </button>
+              </div>
+            </div>
+          </DialogPopup>
+        </DialogPortal>
+      </Dialog>
     </Link>
   );
 }

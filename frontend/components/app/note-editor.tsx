@@ -8,7 +8,11 @@ import {
 } from "@/lib/api-client";
 import { useCategoriesQuery } from "@/lib/categories-queries";
 import { formatDate } from "@/lib/format-date";
-import { useCreateNoteMutation, useNoteQuery } from "@/lib/notes-queries";
+import {
+  useCreateNoteMutation,
+  useDeleteNoteMutation,
+  useNoteQuery,
+} from "@/lib/notes-queries";
 import { noteKeys, notesKeys } from "@/lib/query-keys";
 import { useAppSearchParams } from "@/lib/use-app-search-params";
 import { useNoteAutosave } from "@/lib/use-note-autosave";
@@ -19,7 +23,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { CategorySelect } from "@/components/app/category-select";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPortal,
+  DialogPopup,
+} from "@/components/ui/dialog";
 import { ImageModal } from "@/components/app/image-modal";
+import { InlineMessage } from "@/components/ui/inline-message";
 import { ImageUploader } from "@/components/app/image-uploader";
 import { ImagesPanel } from "@/components/app/images-panel";
 import { MarkdownPreview } from "@/components/app/markdown-preview";
@@ -54,6 +65,7 @@ function NoteEditorForm({
     "split"
   );
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const titleInputRef = useRef<HTMLInputElement>(null);
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -79,6 +91,11 @@ function NoteEditorForm({
 
   const createMutation = useCreateNoteMutation({
     redirectToCategory: categoryIdParam,
+  });
+
+  const deleteMutation = useDeleteNoteMutation({
+    redirectOnSuccess: closeHref,
+    onSuccess: () => setDeleteOpen(false),
   });
 
   const deleteImageMutation = useMutation({
@@ -302,6 +319,29 @@ function NoteEditorForm({
               </Button>
             </>
           )}
+          {noteId && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setDeleteOpen(true)}
+              className="rounded-chip px-2 py-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+              aria-label="Delete note"
+            >
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </Button>
+          )}
           <Link
             href={closeHref}
             className="text-gray-500 hover:text-black p-1 rounded focus-ring"
@@ -508,6 +548,51 @@ function NoteEditorForm({
           imageUrl={previewImageUrl}
         />
       </div>
+
+      {noteId && (
+        <Dialog
+          open={deleteOpen}
+          onOpenChange={(open) => {
+            setDeleteOpen(open);
+            if (!open) deleteMutation.reset();
+          }}
+        >
+          <DialogPortal>
+            <DialogBackdrop forceRender />
+            <DialogPopup>
+              <div className="relative w-full max-w-md rounded-2xl border border-border bg-bg p-6 shadow-2xl pointer-events-auto">
+                <p className="font-body text-gray-900 mb-4">
+                  Delete this note? This cannot be undone.
+                </p>
+                {deleteMutation.error && (
+                  <InlineMessage variant="error" className="mb-4">
+                    {deleteMutation.error.message}
+                  </InlineMessage>
+                )}
+                <div className="flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setDeleteOpen(false)}
+                    className="rounded-chip border border-border px-4 py-2 font-body text-sm hover:bg-hover focus-ring"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      noteId && deleteMutation.mutate(Number(noteId))
+                    }
+                    disabled={deleteMutation.isPending}
+                    className="rounded-chip border border-red-500 bg-red-500 px-4 py-2 font-body text-sm text-white hover:bg-red-600 disabled:opacity-50 focus-ring"
+                  >
+                    {deleteMutation.isPending ? "Deleting…" : "Delete"}
+                  </button>
+                </div>
+              </div>
+            </DialogPopup>
+          </DialogPortal>
+        </Dialog>
+      )}
 
       {!showViewMode && (
         <VoiceInput
