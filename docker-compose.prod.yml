@@ -17,12 +17,10 @@ services:
 
   backend:
     build: ./backend
-    command: ['sh', '-c', 'gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}']
     env_file:
       - .env
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-notes}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-notes}
-      PORT: ${PORT:-8000}
       MEDIA_ROOT: /data/media
       STATIC_ROOT: /app/staticfiles
       DEBUG: 'false'
@@ -32,7 +30,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ['CMD-SHELL', 'curl -f -s http://127.0.0.1:${PORT:-8000}/health/ || exit 1']
+      test: ['CMD-SHELL', 'curl -f -s http://127.0.0.1:80/health/ || exit 1']
       interval: 10s
       timeout: 5s
       retries: 5
