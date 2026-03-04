@@ -37,7 +37,7 @@ services:
           'CMD',
           'python',
           '-c',
-          "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('PORT', '8000') + '/health/')",
+          "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('PORT', '8000') + '/api/health/')",
         ]
       interval: 10s
       timeout: 5s
