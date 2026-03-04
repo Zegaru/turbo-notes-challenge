@@ -32,13 +32,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test:
-        [
-          'CMD',
-          'python',
-          '-c',
-          "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('PORT', '8000') + '/api/health/')",
-        ]
+      test: ['CMD-SHELL', 'curl -f -s http://127.0.0.1:${PORT:-8000}/health/ || exit 1']
       interval: 10s
       timeout: 5s
       retries: 5
