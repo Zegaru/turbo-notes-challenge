@@ -39,5 +39,13 @@ export default defineConfig({
       dependencies: ["setup"],
       testMatch: /login-flow\.spec\.ts/,
     },
+    {
+      name: "e2e-signup-flow",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 720 },
+      },
+      testMatch: /signup-flow\.spec\.ts/,
+    },
   ],
 });

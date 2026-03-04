@@ -19,6 +19,7 @@ export function NotesSearch({
       <input
         id="notes-search"
         type="search"
+        data-testid="notes-search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}

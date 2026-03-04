@@ -247,6 +247,7 @@ function NoteEditorForm({
                     type="button"
                     onClick={handleApplySuggestion}
                     className="text-accent hover:underline"
+                    data-testid="suggest-apply-btn"
                   >
                     Apply
                   </button>

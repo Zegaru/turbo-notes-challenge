@@ -345,3 +345,39 @@ class TestNoteUploadImage:
             format="multipart",
         )
         assert response.status_code == 400
+
+
+@pytest.mark.django_db
+class TestNoteDeleteImage:
+    def test_returns_401_when_unauthenticated(self, api_client, note):
+        image = SimpleUploadedFile("test.png", MINIMAL_PNG, content_type="image/png")
+        note_image = NoteImage.objects.create(note=note, image=image)
+        response = api_client.delete(f"/api/notes/{note.id}/images/{note_image.id}/")
+        assert response.status_code == 401
+
+    def test_returns_404_when_image_not_found(self, api_client, user, note):
+        api_client.force_authenticate(user=user)
+        response = api_client.delete(f"/api/notes/{note.id}/images/99999/")
+        assert response.status_code == 404
+        assert "detail" in response.json()
+
+    def test_returns_404_when_accessing_other_users_note(
+        self, api_client, user, other_user, category
+    ):
+        other_cat = Category.objects.create(user=other_user, name="Other", color="orange")
+        other_note = Note.objects.create(
+            user=other_user, category=other_cat, title="Theirs", content="x", draft=False
+        )
+        image = SimpleUploadedFile("test.png", MINIMAL_PNG, content_type="image/png")
+        note_image = NoteImage.objects.create(note=other_note, image=image)
+        api_client.force_authenticate(user=user)
+        response = api_client.delete(f"/api/notes/{other_note.id}/images/{note_image.id}/")
+        assert response.status_code == 404
+
+    def test_deletes_own_note_image_returns_204(self, api_client, user, note):
+        image = SimpleUploadedFile("test.png", MINIMAL_PNG, content_type="image/png")
+        note_image = NoteImage.objects.create(note=note, image=image)
+        api_client.force_authenticate(user=user)
+        response = api_client.delete(f"/api/notes/{note.id}/images/{note_image.id}/")
+        assert response.status_code == 204
+        assert not NoteImage.objects.filter(pk=note_image.id).exists()
