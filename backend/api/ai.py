@@ -39,7 +39,10 @@ def _build_category_schema(categories: list[str]) -> dict:
                 "properties": {
                     "name": {
                         "type": ["string", "null"],
-                        "description": "The suggested category name, must be exactly one of the provided category names or null if none fit",
+                        "description": (
+                            "The suggested category name, must be exactly one of the "
+                            "provided category names or null if none fit"
+                        ),
                         "enum": name_enum,
                     },
                     "reason": {

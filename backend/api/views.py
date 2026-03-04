@@ -1,6 +1,8 @@
 import difflib
 
 from core.models import Category, Note, NoteImage
+from core.models import validate_note_image as validate_image
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
@@ -130,6 +132,25 @@ class NoteViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Missing 'image' file"}, status=400)
         if note.images.count() >= 5:
             return Response({"detail": "Maximum 5 images per note"}, status=400)
-        note_image = NoteImage.objects.create(note=note, image=image_file)
+        try:
+            validate_image(image_file)
+        except ValidationError as e:
+            msg = e.messages[0] if getattr(e, "messages", None) else str(e)
+            return Response({"detail": msg}, status=400)
+        note_image = NoteImage(note=note, image=image_file)
+        try:
+            note_image.full_clean()
+        except ValidationError as e:
+            if e.message_dict:
+                msgs = [
+                    m
+                    for ms in e.message_dict.values()
+                    for m in (ms if isinstance(ms, list) else [ms])
+                ]
+            else:
+                msgs = getattr(e, "messages", [])
+            msg = str(msgs[0]) if msgs else "Invalid image"
+            return Response({"detail": msg}, status=400)
+        note_image.save()
         serializer = NoteImageSerializer(note_image, context={"request": request})
         return Response(serializer.data, status=201)

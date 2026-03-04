@@ -17,6 +17,15 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "color", "created_at"]
         read_only_fields = ["id", "created_at"]
 
+    def validate_name(self, value):
+        user = get_request_user(self)
+        qs = Category.objects.filter(user=user, name__iexact=value.strip())
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError("A category with this name already exists.")
+        return value
+
     def create(self, validated_data):
         validated_data["user"] = get_request_user(self)
         return super().create(validated_data)
