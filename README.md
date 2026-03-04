@@ -374,9 +374,9 @@ Internet
    ↓
 Coolify / Traefik (HTTPS)
    ↓
-Django + Gunicorn container (port 8000)
+Caddy (port 80) — serves static/media, proxies API to Gunicorn
    ↓
-PostgreSQL container
+Django + Gunicorn (127.0.0.1:8000) + PostgreSQL
 ```
 
 Domain:
@@ -385,11 +385,7 @@ Domain:
 https://api.notes.zegaru.com
 ```
 
-The backend runs using:
-
-```
-gunicorn config.wsgi:application --bind 0.0.0.0:8000
-```
+Caddy serves static and media files; Gunicorn handles the API. See `backend/DEPLOYMENT.md` for Coolify setup.
 
 Database and media storage are persisted using Docker volumes.
 
