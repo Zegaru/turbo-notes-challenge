@@ -29,7 +29,7 @@ repos:
         language: system
         files: ^frontend/.*\.(ts|tsx|js|jsx)$
 
-  # Pre-push: backend tests + frontend typecheck
+  # Pre-push: backend tests + frontend typecheck + frontend unit tests
   - repo: local
     hooks:
       - id: backend-pytest
@@ -40,5 +40,10 @@ repos:
       - id: frontend-typecheck
         name: typecheck (frontend)
         entry: bash -c "cd frontend && pnpm run typecheck"
+        language: system
+        stages: [pre-push]
+      - id: frontend-vitest
+        name: vitest (frontend)
+        entry: bash -c "cd frontend && pnpm test"
         language: system
         stages: [pre-push]

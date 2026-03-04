@@ -60,3 +60,38 @@ jobs:
 
       - name: Typecheck
         run: pnpm run typecheck
+
+      - name: Unit tests (Vitest)
+        run: pnpm test
+
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env
+        run: cp .env.example .env
+
+      - name: Start services
+        run: docker compose up -d --wait
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: cd frontend && pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: cd frontend && pnpm exec playwright install chromium --with-deps
+
+      - name: Run E2E tests
+        run: cd frontend && pnpm test:e2e
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
