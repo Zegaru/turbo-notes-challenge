@@ -18,7 +18,7 @@ export function ImageModal({ open, onOpenChange, imageUrl }: ImageModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogBackdrop />
+        <DialogBackdrop forceRender />
         <DialogPopup>
           <div className="relative max-h-[90vh] max-w-[90vw] pointer-events-auto bg-white rounded-card border border-border shadow-card">
             {imageUrl && (

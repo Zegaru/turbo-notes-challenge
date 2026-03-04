@@ -27,6 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inriaSerif.variable} ${inter.variable}`}>
       <body>
+        <a
+          href="#main"
+          className="sr-only rounded-chip border-2 border-border bg-bg px-4 py-2 font-body text-sm outline-none transition-shadow focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:m-0 focus:block focus-ring"
+        >
+          Skip to main content
+        </a>
         <div className="root">
           <Providers>{children}</Providers>
         </div>

@@ -5,12 +5,12 @@ const brutalistShadow =
   "shadow-[3px_3px_0px_0px_rgba(149,113,57,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(149,113,57,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all";
 
 const variantStyles: Record<string, string> = {
-  primary: `border-2 border-border bg-bg font-body ${brutalistShadow} disabled:opacity-50 disabled:pointer-events-none font-medium`,
-  ghost: "block text-left border border-border font-body hover:bg-hover",
-  secondary: `border-2 border-border bg-white font-body ${brutalistShadow} disabled:opacity-50 disabled:pointer-events-none font-medium`,
-  icon: "flex h-14 w-14 items-center justify-center rounded-full bg-[#2d2d2d] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50",
+  primary: `border-2 border-border bg-bg font-body focus-ring ${brutalistShadow} disabled:opacity-50 disabled:pointer-events-none font-medium`,
+  ghost: "block text-left border border-border font-body hover:bg-hover focus-ring",
+  secondary: `border-2 border-border bg-white font-body focus-ring ${brutalistShadow} disabled:opacity-50 disabled:pointer-events-none font-medium`,
+  icon: "flex h-14 w-14 items-center justify-center rounded-full bg-[#2d2d2d] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 focus-ring",
   color:
-    "h-6 w-6 shrink-0 rounded-full border-2 transition-all border-transparent",
+    "h-6 w-6 shrink-0 rounded-full border-2 transition-all border-transparent focus-ring",
 };
 
 const sizeStyles: Record<string, string> = {

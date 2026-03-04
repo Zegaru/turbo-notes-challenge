@@ -111,7 +111,7 @@ export function VoiceInput({
         type="button"
         onClick={handleToggleExpand}
         disabled={disabled}
-        className={`group flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-border bg-note-yellow shadow-[4px_4px_0_0_#957139] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#957139] hover:bg-hover active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:pointer-events-none ${className}`}
+        className={`group flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-border bg-note-yellow shadow-[4px_4px_0_0_#957139] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#957139] hover:bg-hover active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:pointer-events-none focus-ring ${className}`}
         aria-label="Open Dictaphone"
       >
         <MicrophoneIcon className="h-7 w-7 text-border transition-transform duration-300 group-hover:scale-110" />
@@ -131,7 +131,7 @@ export function VoiceInput({
         </span>
         <button
           onClick={handleToggleExpand}
-          className="hover:text-note-yellow transition-transform hover:rotate-90 duration-300"
+          className="hover:text-note-yellow transition-transform hover:rotate-90 duration-300 rounded focus-ring p-1 -m-1"
           aria-label="Close Dictaphone"
         >
           <CloseIcon className="h-5 w-5" />
@@ -153,7 +153,7 @@ export function VoiceInput({
         {/* Big Record Button */}
         <button
           onClick={handleMicClick}
-          className={`relative z-10 flex h-24 w-24 items-center justify-center rounded-full border-4 border-border transition-all duration-300 ${
+          className={`relative z-10 flex h-24 w-24 items-center justify-center rounded-full border-4 border-border transition-all duration-300 focus-ring ${
             isListening 
               ? "bg-note-orange shadow-[inset_0_6px_12px_rgba(0,0,0,0.4)] scale-95" 
               : "bg-note-yellow shadow-[6px_6px_0_0_#957139] hover:bg-note-yellow/90 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0_0_#957139]"

@@ -41,7 +41,7 @@ export function ImagesPanel({
               <button
                 type="button"
                 onClick={() => onImageClick(img)}
-                className="block overflow-hidden bg-gray-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#FDFBF7]"
+                className="block overflow-hidden bg-gray-200 focus-ring focus:ring-offset-[#FDFBF7]"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img

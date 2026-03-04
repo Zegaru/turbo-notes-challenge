@@ -35,6 +35,7 @@ export function CategorySelect({
       disabled={disabled}
     >
       <SelectTrigger
+        aria-label="Category"
         className={
           isEmpty
             ? "min-w-40 border-dashed border-gray-400/60 text-gray-500 hover:border-gray-500/70 hover:text-gray-600"

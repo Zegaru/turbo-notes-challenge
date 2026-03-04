@@ -14,7 +14,7 @@ export const SelectTrigger = React.forwardRef<
   return (
     <BaseSelect.Trigger
       ref={ref}
-      className={`rounded-full border border-gray-400/50 bg-transparent px-4 py-1.5 font-body text-sm text-gray-800 outline-none focus:ring-2 focus:ring-black flex items-center justify-between gap-2 data-placeholder:text-gray-500 ${className || ""}`}
+      className={`rounded-full border border-gray-400/50 bg-transparent px-4 py-1.5 font-body text-sm text-gray-800 outline-none focus-ring flex items-center justify-between gap-2 data-placeholder:text-gray-500 ${className || ""}`}
       {...props}
     />
   );

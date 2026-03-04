@@ -59,6 +59,17 @@
   h6 {
     font-family: var(--font-heading);
   }
+
+}
+
+/*
+ * Reusable focus ring - apply to any focusable element that needs the standard
+ * accent-colored focus indicator (2px ring, 2px offset).
+ */
+@layer utilities {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg;
+  }
 }
 
 /*
@@ -92,5 +103,16 @@
 @keyframes landing-reveal {
   to {
     opacity: 1;
+  }
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

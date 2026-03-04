@@ -26,7 +26,8 @@ export function BottomNav() {
       >
         <Link
           href={allNotesHref}
-          className={`flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs transition-colors ${
+          aria-current={isAllNotes ? "page" : undefined}
+          className={`flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs transition-colors rounded focus-ring ${
             isAllNotes ? "text-accent font-semibold" : "text-gray-600"
           }`}
         >
@@ -49,7 +50,7 @@ export function BottomNav() {
         <button
           type="button"
           onClick={() => setCategoriesOpen(true)}
-          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs text-gray-600 transition-colors hover:text-accent"
+          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs text-gray-600 transition-colors hover:text-accent rounded focus-ring"
         >
           <svg
             className="h-6 w-6"
@@ -71,7 +72,7 @@ export function BottomNav() {
           type="button"
           onClick={() => createNote()}
           disabled={isPending}
-          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs font-medium text-white bg-accent hover:bg-accent/90 disabled:opacity-50 transition-colors min-w-0"
+          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs font-medium text-white bg-accent hover:bg-accent/90 disabled:opacity-50 transition-colors min-w-0 rounded focus-ring"
         >
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
@@ -88,7 +89,7 @@ export function BottomNav() {
           type="button"
           onClick={() => logout.mutate()}
           disabled={logout.isPending}
-          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs text-gray-600 transition-colors hover:text-accent disabled:opacity-50"
+          className="flex flex-1 flex-col items-center gap-1 py-3 px-2 font-body text-xs text-gray-600 transition-colors hover:text-accent disabled:opacity-50 rounded focus-ring"
         >
           <svg
             className="h-6 w-6"

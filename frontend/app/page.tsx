@@ -98,10 +98,13 @@ export default function Home() {
         }
         .animate-reveal-up { animation: reveal-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .animate-reveal-card { animation: reveal-card 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-reveal-up, .animate-reveal-card { animation: none; opacity: 1; }
+        }
       `,
         }}
       />
-      <main className="relative min-h-screen overflow-hidden bg-bg selection:bg-accent/20">
+      <main id="main" className="relative min-h-screen overflow-hidden bg-bg selection:bg-accent/20">
         {/* Layered Atmosphere Background */}
         <div className="pointer-events-none absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,var(--color-bg-warm)_0%,transparent_40%)] opacity-30 mix-blend-multiply" />
@@ -174,7 +177,7 @@ export default function Home() {
                   </Link>
                   <Link
                     href="/login"
-                    className="group flex items-center gap-2 font-body text-sm font-medium text-gray-700 hover:text-accent transition-colors px-4 py-3"
+                    className="group flex items-center gap-2 font-body text-sm font-medium text-gray-700 hover:text-accent transition-colors px-4 py-3 rounded focus-ring"
                   >
                     Sign in
                     <span className="transition-transform group-hover:translate-x-1">
@@ -191,7 +194,7 @@ export default function Home() {
             >
               <Link
                 href="/readme"
-                className="inline-flex items-center gap-2 text-sm font-body text-gray-500 hover:text-gray-900 transition-colors"
+                className="inline-flex items-center gap-2 text-sm font-body text-gray-500 hover:text-gray-900 transition-colors rounded focus-ring px-1 -mx-1"
               >
                 <svg
                   className="w-4 h-4"

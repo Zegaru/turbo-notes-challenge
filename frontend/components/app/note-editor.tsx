@@ -149,11 +149,6 @@ function NoteEditorForm({
           e.preventDefault();
           setEditMode(true);
         }
-      } else if (e.key === "Escape") {
-        if (isEditing && noteId) {
-          e.preventDefault();
-          setEditMode(false);
-        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -295,7 +290,12 @@ function NoteEditorForm({
               </Button>
             </>
           )}
-          <Link href={closeHref} className="text-gray-500 hover:text-black p-1" data-testid="note-editor-close">
+          <Link
+            href={closeHref}
+            className="text-gray-500 hover:text-black p-1 rounded focus-ring"
+            aria-label="Close note"
+            data-testid="note-editor-close"
+          >
             <svg
               className="h-6 w-6"
               fill="none"
@@ -353,14 +353,30 @@ function NoteEditorForm({
           {showViewMode ? (
             <>
               <h1
+                tabIndex={0}
                 onClick={() => setEditMode(true, "title")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setEditMode(true, "title");
+                  }
+                }}
                 className="font-heading text-3xl font-bold text-black cursor-text rounded px-1 -mx-1 hover:bg-black/5 transition-colors sm:text-4xl"
               >
                 {title || "Untitled"}
               </h1>
               <div
+                tabIndex={0}
+                role="button"
                 onClick={() => setEditMode(true, "content")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setEditMode(true, "content");
+                  }
+                }}
                 className="mt-8 min-h-[200px] shrink-0 cursor-text rounded px-1 -mx-1 hover:bg-black/5 transition-colors"
+                aria-label="Edit note content"
               >
                 <MarkdownPreview content={content} />
               </div>
@@ -376,15 +392,20 @@ function NoteEditorForm({
                   handleFieldChange();
                 }}
                 placeholder="Note Title"
-                className="w-full bg-transparent font-heading text-3xl font-bold text-black outline-none placeholder:text-gray-800/50 sm:text-4xl"
+                className="w-full bg-transparent font-heading text-3xl font-bold text-black outline-none placeholder:text-gray-800/50 sm:text-4xl rounded focus-ring"
                 data-testid="note-title"
               />
 
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div
+                className="mt-6 flex flex-wrap gap-2"
+                role="group"
+                aria-label="Content view mode"
+              >
                 <button
                   type="button"
+                  aria-pressed={contentMode === "edit"}
                   onClick={() => setContentMode("edit")}
-                  className={`rounded-chip border px-2 py-1 font-body text-sm ${
+                  className={`rounded-chip border px-2 py-1 font-body text-sm focus-ring ${
                     contentMode === "edit"
                       ? "border-border bg-bg shadow-card"
                       : "border-transparent text-gray-600 hover:text-black"
@@ -394,8 +415,9 @@ function NoteEditorForm({
                 </button>
                 <button
                   type="button"
+                  aria-pressed={contentMode === "preview"}
                   onClick={() => setContentMode("preview")}
-                  className={`rounded-chip border px-2 py-1 font-body text-sm ${
+                  className={`rounded-chip border px-2 py-1 font-body text-sm focus-ring ${
                     contentMode === "preview"
                       ? "border-border bg-bg shadow-card"
                       : "border-transparent text-gray-600 hover:text-black"
@@ -405,8 +427,9 @@ function NoteEditorForm({
                 </button>
                 <button
                   type="button"
+                  aria-pressed={contentMode === "split"}
                   onClick={() => setContentMode("split")}
-                  className={`rounded-chip border px-2 py-1 font-body text-sm ${
+                  className={`rounded-chip border px-2 py-1 font-body text-sm focus-ring ${
                     contentMode === "split"
                       ? "border-border bg-bg shadow-card"
                       : "border-transparent text-gray-600 hover:text-black"
@@ -417,7 +440,7 @@ function NoteEditorForm({
               </div>
 
               {contentMode === "split" ? (
-                <div className="mt-4 flex-1 min-h-[200px] flex flex-col gap-4 overflow-hidden lg:flex-row">
+                <div className="mt-4 p-1 flex-1 min-h-[200px] flex flex-col gap-4 overflow-hidden lg:flex-row">
                   <textarea
                     ref={contentTextareaRef}
                     value={content}
@@ -426,7 +449,7 @@ function NoteEditorForm({
                       handleFieldChange();
                     }}
                     placeholder="Pour your heart out..."
-                    className="scrollbar flex-1 min-w-0 resize-none bg-transparent font-body text-lg text-gray-900 outline-none placeholder:text-gray-800/50 leading-relaxed"
+                    className="scrollbar flex-1 min-w-0 resize-none bg-transparent font-body text-lg text-gray-900 outline-none placeholder:text-gray-800/50 leading-relaxed rounded focus-ring"
                     data-testid="note-content"
                   />
                   <div
@@ -446,7 +469,7 @@ function NoteEditorForm({
                     handleFieldChange();
                   }}
                   placeholder="Pour your heart out..."
-                  className="scrollbar mt-4 w-full flex-1 min-h-[200px] resize-none bg-transparent font-body text-lg text-gray-900 outline-none placeholder:text-gray-800/50 leading-relaxed"
+                  className="scrollbar mt-4 w-full flex-1 min-h-[200px] resize-none bg-transparent font-body text-lg text-gray-900 outline-none placeholder:text-gray-800/50 leading-relaxed rounded focus-ring"
                   data-testid="note-content"
                 />
               ) : (

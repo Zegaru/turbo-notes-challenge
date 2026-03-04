@@ -26,7 +26,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             >
               <Sidebar />
             </Suspense>
-            <main className="scrollbar min-h-0 flex-1 overflow-auto pb-16 lg:pb-0">
+            <main id="main" className="scrollbar min-h-0 flex-1 overflow-auto pb-16 lg:pb-0">
               {children}
             </main>
             <BottomNav />

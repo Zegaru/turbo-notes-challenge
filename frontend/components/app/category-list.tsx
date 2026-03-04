@@ -22,7 +22,7 @@ export function CategoryList() {
     <div className="flex flex-col gap-4">
       <Link
         href={baseHref}
-        className={`font-body text-sm font-bold text-gray-900 hover:opacity-90 transition-opacity ${!selectedId ? "opacity-100" : "opacity-75"}`}
+        className={`font-body text-sm font-bold text-gray-900 hover:opacity-90 transition-opacity rounded focus-ring ${!selectedId ? "opacity-100" : "opacity-75"}`}
       >
         All notes
       </Link>
@@ -35,7 +35,7 @@ export function CategoryList() {
           <button
             type="button"
             onClick={() => refetch()}
-            className="text-left text-sm text-gray-700 underline hover:text-gray-900"
+            className="text-left text-sm text-gray-700 underline hover:text-gray-900 rounded focus-ring px-1 -mx-1"
           >
             Retry
           </button>

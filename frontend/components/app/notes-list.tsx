@@ -66,7 +66,7 @@ export function NotesList() {
           <button
             type="button"
             onClick={() => refetch()}
-            className="rounded-chip border border-border bg-bg px-3 py-1.5 font-body text-sm text-gray-700 hover:bg-gray-100"
+            className="rounded-chip border border-border bg-bg px-3 py-1.5 font-body text-sm text-gray-700 hover:bg-gray-100 focus-ring"
           >
             Retry
           </button>
@@ -142,7 +142,7 @@ export function NotesList() {
               pinMutation.variables &&
               pinMutation.mutate(pinMutation.variables)
             }
-            className="text-sm text-accent hover:underline"
+            className="text-sm text-accent hover:underline rounded focus-ring px-1 -mx-1"
           >
             Retry
           </button>

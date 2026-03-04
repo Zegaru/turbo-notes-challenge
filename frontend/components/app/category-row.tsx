@@ -94,7 +94,7 @@ export function CategoryRow({ category, isSelected, baseHref }: CategoryRowProps
             onBlur={handleRenameSubmit}
             onKeyDown={handleKeyDown}
             disabled={renameMutation.isPending}
-            className="flex-1 rounded-chip border border-border bg-bg px-2 py-1 font-body text-sm shadow-card outline-none"
+            className="flex-1 rounded-chip border border-border bg-bg px-2 py-1 font-body text-sm shadow-card outline-none focus-ring"
           />
         </div>
         {renameError && (
@@ -107,14 +107,14 @@ export function CategoryRow({ category, isSelected, baseHref }: CategoryRowProps
   }
 
   return (
-    <li className="group flex items-center gap-2">
+    <li className="group flex items-center gap-2 has-focus:[&_button]:opacity-70">
       <Link
         href={`${baseHref}?category=${category.id}`}
         onDoubleClick={(e) => {
           e.preventDefault();
           startEditing();
         }}
-        className={`flex flex-1 items-center gap-3 font-body text-sm transition-opacity hover:opacity-80 ${
+        className={`flex flex-1 items-center gap-3 font-body text-sm transition-opacity hover:opacity-80 rounded focus-ring ${
           isSelected
             ? "font-semibold opacity-100 text-gray-900"
             : "text-gray-700 opacity-90"
@@ -129,9 +129,22 @@ export function CategoryRow({ category, isSelected, baseHref }: CategoryRowProps
         type="button"
         onClick={(e) => {
           e.preventDefault();
+          startEditing();
+        }}
+        className="opacity-0 group-hover:opacity-70 hover:opacity-100 focus:opacity-100 focus-ring p-1 rounded transition-opacity text-gray-500 hover:text-gray-900"
+        aria-label={`Edit ${category.name}`}
+      >
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
           setDeleteOpen(true);
         }}
-        className="opacity-0 group-hover:opacity-70 hover:opacity-100 p-1 rounded transition-opacity text-gray-500 hover:text-red-600"
+        className="opacity-0 group-hover:opacity-70 hover:opacity-100 focus:opacity-100 focus-ring p-1 rounded transition-opacity text-gray-500 hover:text-red-600"
         aria-label={`Delete ${category.name}`}
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -162,7 +175,7 @@ export function CategoryRow({ category, isSelected, baseHref }: CategoryRowProps
                 <button
                   type="button"
                   onClick={() => setDeleteOpen(false)}
-                  className="rounded-chip border border-border px-4 py-2 font-body text-sm hover:bg-hover"
+                  className="rounded-chip border border-border px-4 py-2 font-body text-sm hover:bg-hover focus-ring"
                 >
                   Cancel
                 </button>
@@ -170,7 +183,7 @@ export function CategoryRow({ category, isSelected, baseHref }: CategoryRowProps
                   type="button"
                   onClick={() => deleteMutation.mutate()}
                   disabled={deleteMutation.isPending}
-                  className="rounded-chip border border-red-500 bg-red-500 px-4 py-2 font-body text-sm text-white hover:bg-red-600 disabled:opacity-50"
+                  className="rounded-chip border border-red-500 bg-red-500 px-4 py-2 font-body text-sm text-white hover:bg-red-600 disabled:opacity-50 focus-ring"
                 >
                   {deleteMutation.isPending ? "Deleting…" : "Delete"}
                 </button>

@@ -30,9 +30,11 @@ export function SaveStatus({
 
   if (status === "saved") {
     return (
-      <InlineMessage variant="success" className={className}>
-        Saved
-      </InlineMessage>
+      <span aria-live="polite">
+        <InlineMessage variant="success" className={className}>
+          Saved
+        </InlineMessage>
+      </span>
     );
   }
 

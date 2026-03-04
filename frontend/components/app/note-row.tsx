@@ -61,7 +61,7 @@ export function NoteRow({
       href={href}
       data-testid="note-row"
       data-note-id={String(note.id)}
-      className={`group relative block rounded-2xl border-2 p-4 font-body transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06),0_4px_8px_rgba(0,0,0,0.03)] sm:p-6 ${bgClass} ${
+      className={`group relative block rounded-2xl border-2 p-4 font-body transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06),0_4px_8px_rgba(0,0,0,0.03)] sm:p-6 focus-ring ${bgClass} ${
         isSelected ? "ring-2 ring-black ring-offset-2 ring-offset-bg" : ""
       }`}
     >
@@ -73,15 +73,54 @@ export function NoteRow({
 
       <div className="relative z-10 flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="text-sm flex items-center gap-2">
+          <div className="text-sm flex items-center w-full gap-2">
             <span className="font-bold text-black">
               {formatRelativeDate(note.updated_at)}
             </span>
             {note.category_name && (
               <span className="text-gray-700">{note.category_name}</span>
             )}
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onPinToggle(note);
+              }}
+              disabled={isPinning}
+              className="shrink-0 p-1 ml-auto text-gray-600 hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed rounded focus-ring"
+              aria-label={note.pinned ? "Unpin note" : "Pin note"}
+              data-testid="note-pin-btn"
+            >
+              {isPinning ? (
+                <Spinner size="md" />
+              ) : note.pinned ? (
+                <svg
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                </svg>
+              ) : (
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                  />
+                </svg>
+              )}
+            </button>
           </div>
-          <h3 className="mt-4 font-heading text-2xl text-black sm:text-3xl">
+          <h3 className="mt-4 font-heading text-2xl text-black line-clamp-4">
             {note.title || "Untitled"}
           </h3>
           <div className="mt-3 line-clamp-6 overflow-hidden">
@@ -115,40 +154,6 @@ export function NoteRow({
             </div>
           )}
         </div>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onPinToggle(note);
-          }}
-          disabled={isPinning}
-          className="shrink-0 p-1 text-gray-600 hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label={note.pinned ? "Unpin note" : "Pin note"}
-          data-testid="note-pin-btn"
-        >
-          {isPinning ? (
-            <Spinner size="md" />
-          ) : note.pinned ? (
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
-            </svg>
-          ) : (
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-              />
-            </svg>
-          )}
-        </button>
       </div>
     </Link>
   );

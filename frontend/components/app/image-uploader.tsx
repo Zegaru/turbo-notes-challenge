@@ -99,7 +99,7 @@ export function ImageUploader({
                 inputRef.current?.click();
               }
             }}
-            className={`flex h-24 w-24 p-1 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-sm border border-dashed transition-colors bg-gray-100/60 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#FDFBF7] ${
+            className={`flex h-24 w-24 p-1 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-sm border border-dashed transition-colors bg-gray-100/60 focus-ring focus:ring-offset-[#FDFBF7] ${
               dragOver ? "border-accent bg-hover" : "border-black/15"
             }`}
             onDragOver={handleDragOver}
