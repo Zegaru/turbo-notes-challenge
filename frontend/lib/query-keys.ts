@@ -1,7 +1,10 @@
 export const notesKeys = {
   all: ["notes"] as const,
-  list: (categoryId: string | null, search?: string) =>
-    ["notes", categoryId ?? "all", search ?? ""] as const,
+  list: (
+    categoryId: string | null,
+    pinned: boolean,
+    q?: string
+  ) => ["notes", categoryId ?? "all", pinned, q ?? ""] as const,
 };
 
 export const noteKeys = {

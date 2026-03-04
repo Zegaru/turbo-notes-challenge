@@ -5,13 +5,18 @@ import { notesKeys, noteKeys } from "@/lib/query-keys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
-export function useNotesQuery(categoryId: string | null, search: string) {
+export function useNotesQuery(
+  categoryId: string | null,
+  pinned: boolean,
+  q: string
+) {
   return useQuery({
-    queryKey: notesKeys.list(categoryId, search),
+    queryKey: notesKeys.list(categoryId, pinned, q),
     queryFn: () =>
       notesApi.list({
         categoryId: categoryId || undefined,
-        q: search || undefined,
+        pinned: pinned || undefined,
+        q: q || undefined,
       }),
   });
 }

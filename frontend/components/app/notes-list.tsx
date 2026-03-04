@@ -3,6 +3,8 @@
 import { useDebouncedValue } from "@/lib/use-debounced-value";
 import { useNotesQuery, usePinMutation } from "@/lib/notes-queries";
 import { useAppSearchParams } from "@/lib/use-app-search-params";
+import { useCategoriesQuery } from "@/lib/categories-queries";
+import { parseSearchQuery } from "@/lib/parse-search-query";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { NotesSearch } from "./notes-search";
@@ -14,6 +16,10 @@ export function NotesList() {
   const [searchInput, setSearchInput] = useState(searchParam ?? "");
   const debouncedSearch = useDebouncedValue(searchInput, 300);
   const lastWrittenSearchRef = useRef<string>("");
+
+  const { data: categories = [] } = useCategoriesQuery();
+  const parsed = parseSearchQuery(debouncedSearch, categories);
+  const effectiveCategoryId = parsed.categoryId ?? categoryIdParam;
 
   useEffect(() => {
     setSearchInUrl(debouncedSearch);
@@ -29,8 +35,9 @@ export function NotesList() {
   }, [searchParam]);
 
   const { data: notes = [], isPending } = useNotesQuery(
-    categoryIdParam,
-    debouncedSearch
+    effectiveCategoryId,
+    parsed.pinned,
+    parsed.q
   );
   const pinMutation = usePinMutation();
 
