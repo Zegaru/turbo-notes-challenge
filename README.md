@@ -5,6 +5,9 @@ Monorepo: **Django + DRF backend, Next.js + TypeScript frontend.**
 A modern note-taking application designed to capture and organize thoughts efficiently.
 The app supports markdown editing, image attachments, pinned notes, categories, and AI-assisted organization.
 
+<img width="1898" height="940" alt="image" src="https://github.com/user-attachments/assets/caeaa890-cfe4-4f79-9410-4b56e845d9e5" />
+<img width="1906" height="938" alt="image" src="https://github.com/user-attachments/assets/ca61786d-6473-4e0b-a690-77bb430e520c" />
+
 ---
 
 # Features
