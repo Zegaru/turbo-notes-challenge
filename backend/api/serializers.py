@@ -14,7 +14,7 @@ def get_request_user(serializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["id", "name", "created_at"]
+        fields = ["id", "name", "color", "created_at"]
         read_only_fields = ["id", "created_at"]
 
     def create(self, validated_data):
@@ -40,10 +40,14 @@ class NoteImageSerializer(serializers.ModelSerializer):
 
 class NoteSerializer(serializers.ModelSerializer):
     category_name = serializers.SerializerMethodField()
+    category_color = serializers.SerializerMethodField()
     images = NoteImageSerializer(many=True, read_only=True)
 
     def get_category_name(self, obj):
         return obj.category.name if obj.category else None
+
+    def get_category_color(self, obj):
+        return obj.category.color if obj.category else None
 
     class Meta:
         model = Note
@@ -52,13 +56,26 @@ class NoteSerializer(serializers.ModelSerializer):
             "title",
             "content",
             "pinned",
+            "draft",
             "category",
             "category_name",
+            "category_color",
             "images",
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "category_name", "images", "created_at", "updated_at"]
+        read_only_fields = [
+            "id",
+            "category_name",
+            "category_color",
+            "images",
+            "created_at",
+            "updated_at",
+        ]
+        extra_kwargs = {
+            "title": {"allow_blank": True, "required": False},
+            "content": {"allow_blank": True, "required": False},
+        }
 
     def validate_category(self, value):
         if value is None:

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { useLoginMutation } from "@/lib/auth-queries";
 
 const schema = z.object({
@@ -75,13 +76,15 @@ export default function LoginPage() {
               </p>
             )}
           </div>
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            size="lg"
+            className="w-full"
             disabled={formState.isSubmitting || loginMutation.isPending}
-            className="w-full rounded-card border border-border bg-bg px-4 py-2 font-body shadow-card hover:bg-hover disabled:opacity-50"
           >
             Login
-          </button>
+          </Button>
         </form>
         {loginMutation.isError && (
           <p className="mt-4 text-center text-sm text-red-500">

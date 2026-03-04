@@ -80,6 +80,8 @@ class NoteViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = Note.objects.filter(user=self.request.user).order_by("-pinned", "-updated_at")
+        if self.action == "list":
+            qs = qs.filter(draft=False)
         params = self.request.query_params
 
         if category_id := params.get("category_id"):

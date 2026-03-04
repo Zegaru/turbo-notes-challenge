@@ -1,33 +1,90 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { notesApi } from "@/lib/api-client";
+import { NotesList } from "@/components/app/notes-list";
+import { NoteEditor } from "@/components/app/note-editor";
+import {
+  Dialog,
+  DialogPortal,
+  DialogBackdrop,
+  DialogPopup,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
-type HealthStatus = { status?: string } | null;
+function AppContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const categoryParam = searchParams.get("category");
+  const noteParam = searchParams.get("note");
+  const isEditing = noteParam !== null;
 
-export default function AppPage() {
-  const [health, setHealth] = useState<HealthStatus>(null);
-  const [error, setError] = useState<string | null>(null);
+  const closeHref = categoryParam ? `/app?category=${categoryParam}` : "/app";
 
-  useEffect(() => {
-    api
-      .get<{ status: string }>("/api/health/")
-      .then(setHealth)
-      .catch((e) => setError(e instanceof Error ? e.message : String(e)));
-  }, []);
+  const createMutation = useMutation({
+    mutationFn: () =>
+      notesApi.create({
+        title: "",
+        content: "",
+        pinned: false,
+        draft: true,
+        category: categoryParam ? Number(categoryParam) : null,
+      }),
+    onSuccess: (data) => {
+      const href = categoryParam
+        ? `/app?category=${categoryParam}&note=${data.id}`
+        : `/app?note=${data.id}`;
+      router.push(href);
+    },
+  });
 
   return (
-    <div>
-      <h1 className="text-xl font-semibold">Notes</h1>
-      <p className="mt-2 text-gray-500">Main content area placeholder.</p>
-      <div className="mt-6 rounded border p-4">
-        <h2 className="text-sm font-medium text-gray-600">Backend health</h2>
-        {health && (
-          <p className="mt-1 text-green-600">{health.status ?? "OK"}</p>
-        )}
-        {error && <p className="mt-1 text-red-500">{error}</p>}
-        {!health && !error && <p className="mt-1 text-gray-400">Checking…</p>}
+    <div className="relative flex h-full flex-col px-8 py-10">
+      <div className="mb-8 flex items-center justify-end">
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={() => createMutation.mutate()}
+          disabled={createMutation.isPending}
+          className="rounded-full border-border px-6 py-2.5 font-body text-sm font-medium"
+        >
+          + New Note
+        </Button>
       </div>
+
+      <div className="flex-1">
+        <NotesList />
+      </div>
+
+      <Dialog
+        open={isEditing}
+        onOpenChange={(open) => {
+          if (!open) {
+            router.push(closeHref);
+          }
+        }}
+      >
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPopup>
+            <div className="relative w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl flex flex-col bg-bg pointer-events-auto">
+              <NoteEditor />
+            </div>
+          </DialogPopup>
+        </DialogPortal>
+      </Dialog>
     </div>
+  );
+}
+
+export default function AppPage() {
+  return (
+    <Suspense
+      fallback={<div className="p-8 font-body text-gray-500">Loading…</div>}
+    >
+      <AppContent />
+    </Suspense>
   );
 }

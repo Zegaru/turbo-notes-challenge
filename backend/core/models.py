@@ -16,6 +16,14 @@ def validate_note_image(file):
         raise ValidationError("File must be an image (image/*)")
 
 
+CATEGORY_COLORS = [
+    ("orange", "Orange"),
+    ("yellow", "Yellow"),
+    ("sage", "Sage"),
+    ("teal", "Teal"),
+]
+
+
 class Category(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -23,6 +31,11 @@ class Category(models.Model):
         related_name="categories",
     )
     name = models.CharField(max_length=80)
+    color = models.CharField(
+        max_length=20,
+        choices=CATEGORY_COLORS,
+        default="orange",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -54,6 +67,7 @@ class Note(models.Model):
     title = models.CharField(max_length=120, blank=True)
     content = models.TextField()
     pinned = models.BooleanField(default=False)
+    draft = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

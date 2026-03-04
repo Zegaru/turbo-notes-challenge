@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+
+Always use React hooks and Tanstack Query
+If we need a new reusable component, extend it from base UI and create it in /components/ui 
+https://base-ui.com/react/overview/quick-start
+Respect the design system /DESIGN_SYSTEM.md

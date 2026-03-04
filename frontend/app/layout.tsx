@@ -27,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inriaSerif.variable} ${inter.variable}`}>
       <body>
-        <Providers>{children}</Providers>
+        <div className="root">
+          <Providers>{children}</Providers>
+        </div>
       </body>
     </html>
   );

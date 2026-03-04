@@ -43,8 +43,12 @@
 /* Base styles using design tokens */
 @layer base {
   body {
+    position: relative;
     font-family: var(--font-body);
     background-color: var(--color-bg);
+  }
+  .root {
+    isolation: isolate;
   }
 
   h1,
