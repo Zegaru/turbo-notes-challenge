@@ -154,3 +154,12 @@ class NoteViewSet(viewsets.ModelViewSet):
         note_image.save()
         serializer = NoteImageSerializer(note_image, context={"request": request})
         return Response(serializer.data, status=201)
+
+    @action(detail=True, methods=["delete"], url_path="images/(?P<image_pk>[^/.]+)")
+    def delete_image(self, request, pk=None, image_pk=None):
+        note = self.get_object()
+        note_image = note.images.filter(pk=image_pk).first()
+        if not note_image:
+            return Response({"detail": "Image not found"}, status=404)
+        note_image.delete()
+        return Response(status=204)

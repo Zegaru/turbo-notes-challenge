@@ -4,6 +4,7 @@ import {
   colorToCardClass,
   type CategoryColor,
   type Note,
+  notesApi,
 } from "@/lib/api-client";
 import { useCategoriesQuery } from "@/lib/categories-queries";
 import { formatDate } from "@/lib/format-date";
@@ -12,7 +13,7 @@ import { noteKeys, notesKeys } from "@/lib/query-keys";
 import { useAppSearchParams } from "@/lib/use-app-search-params";
 import { useNoteAutosave } from "@/lib/use-note-autosave";
 import { useSuggestCategory } from "@/lib/use-suggest-category";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,17 @@ function NoteEditorForm({
 
   const createMutation = useCreateNoteMutation({
     redirectToCategory: categoryIdParam,
+  });
+
+  const deleteImageMutation = useMutation({
+    mutationFn: ({ noteId, imageId }: { noteId: number; imageId: number }) =>
+      notesApi.deleteImage(noteId, imageId),
+    onSuccess: () => {
+      if (noteId) {
+        queryClient.invalidateQueries({ queryKey: noteKeys.detail(noteId) });
+        queryClient.invalidateQueries({ queryKey: notesKeys.all });
+      }
+    },
   });
 
   const createErrorMessage = createMutation.error?.message ?? null;
@@ -329,6 +341,15 @@ function NoteEditorForm({
               onImageClick={(img) => setPreviewImageUrl(img.url)}
               onInsertIntoNote={(url) =>
                 setContent((prev) => prev + `\n![image](${url})\n`)
+              }
+              onDeleteImage={
+                isEditing && noteId
+                  ? (img) =>
+                      deleteImageMutation.mutate({
+                        noteId: Number(noteId),
+                        imageId: img.id,
+                      })
+                  : undefined
               }
               uploadSlot={
                 isEditing ? (

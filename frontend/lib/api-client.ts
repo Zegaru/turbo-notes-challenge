@@ -129,4 +129,6 @@ export const notesApi = {
       file,
       options
     ),
+  deleteImage: (noteId: number, imageId: number) =>
+    api.delete(`/api/notes/${noteId}/images/${imageId}/`),
 };
