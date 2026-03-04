@@ -20,20 +20,44 @@ def _mock_suggest(categories: list[str], title: str, content: str) -> dict:
 
 
 _OPENAI_SYSTEM_PROMPT = (
-    'Output JSON only. Keys: "name" (string or null), "reason" (string). '
-    '"name" must be exactly one of the provided category names or null. '
-    '"reason" is a short explanation.'
+    "Suggest a category for the note based on its title and content. "
+    "Return exactly one of the provided category names, or null if none fit. "
+    "Provide a short reason for your suggestion."
 )
 
 
-def _validate_openai_output(data: dict, allowed_names: list[str]) -> dict:
-    """Validate and normalize OpenAI response. Returns {name, reason} or raises."""
-    if not isinstance(data, dict):
-        raise ValueError("Expected object")
-    if "name" not in data or "reason" not in data:
-        raise ValueError("Missing required keys: name, reason")
-    name = data["name"]
-    reason = data["reason"]
+def _build_category_schema(categories: list[str]) -> dict:
+    """Build JSON schema for Structured Outputs. name must be one of categories or null."""
+    name_enum: list = [None] + list(categories) if categories else [None]
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "category_suggestion",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": ["string", "null"],
+                        "description": "The suggested category name, must be exactly one of the provided category names or null if none fit",
+                        "enum": name_enum,
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "Short explanation for the suggestion",
+                    },
+                },
+                "required": ["name", "reason"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
+def _normalize_parsed(parsed: dict, allowed_names: list[str]) -> dict:
+    """Normalize parsed output: match name to allowed case, ensure reason is str."""
+    name = parsed.get("name")
+    reason = parsed.get("reason", "Suggested")
     if not isinstance(reason, str):
         reason = str(reason) if reason is not None else "Suggested"
     if name is None:
@@ -43,13 +67,11 @@ def _validate_openai_output(data: dict, allowed_names: list[str]) -> dict:
         return {"name": None, "reason": reason}
     allowed_lower = {n.lower(): n for n in allowed_names}
     matched = allowed_lower.get(name.lower())
-    if matched is None:
-        return {"name": None, "reason": reason}
-    return {"name": matched, "reason": reason}
+    return {"name": matched, "reason": reason} if matched else {"name": None, "reason": reason}
 
 
 def _openai_suggest(categories: list[str], title: str, content: str) -> dict:
-    """Call OpenAI Chat Completions to suggest a category."""
+    """Call OpenAI Chat Completions to suggest a category using Structured Outputs."""
     try:
         from openai import OpenAI
     except ImportError:
@@ -61,7 +83,7 @@ def _openai_suggest(categories: list[str], title: str, content: str) -> dict:
         logger.warning("OPENAI_API_KEY not set")
         return AI_UNAVAILABLE
 
-    model = getattr(settings, "OPENAI_MODEL", "gpt-4o-mini")
+    model = getattr(settings, "OPENAI_MODEL", "gpt-5-mini")
     timeout = getattr(settings, "AI_REQUEST_TIMEOUT", 10.0)
 
     client = OpenAI(api_key=api_key, timeout=timeout)
@@ -73,26 +95,25 @@ def _openai_suggest(categories: list[str], title: str, content: str) -> dict:
     )
 
     try:
-        response = client.chat.completions.create(
+        response = client.chat.completions.parse(
             model=model,
             messages=[
                 {"role": "system", "content": _OPENAI_SYSTEM_PROMPT},
                 {"role": "user", "content": user_content},
             ],
-            max_tokens=80,
-            response_format={"type": "json_object"},
+            response_format=_build_category_schema(categories),
         )
-        text = (response.choices[0].message.content or "").strip()
+        msg = response.choices[0].message
+        if getattr(msg, "refusal", None):
+            logger.warning("OpenAI refused: %s", msg.refusal)
+            return AI_UNAVAILABLE
+        text = (msg.content or "").strip()
         if not text:
             return AI_UNAVAILABLE
-        try:
-            data = json.loads(text)
-        except json.JSONDecodeError:
-            logger.warning("OpenAI returned invalid JSON")
-            return AI_UNAVAILABLE
-        return _validate_openai_output(data, categories)
+        data = json.loads(text)
+        return _normalize_parsed(data, categories)
     except Exception as e:
-        logger.warning("OpenAI suggest_category failed: %s", type(e).__name__)
+        logger.warning("OpenAI suggest_category failed: %s", e)
         return AI_UNAVAILABLE
 
 
