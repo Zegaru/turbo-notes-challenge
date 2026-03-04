@@ -27,7 +27,7 @@ export function ImagesPanel({
   canInsert = true,
 }: ImagesPanelProps) {
   return (
-    <div className="mb-4 flex flex-col gap-3">
+    <div className="mb-4 flex flex-col gap-3" data-testid="images-panel">
       <h3 className="font-heading text-sm font-semibold text-gray-800 sr-only">
         Images
       </h3>

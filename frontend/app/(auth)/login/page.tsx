@@ -41,12 +41,14 @@ export default function LoginPage() {
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="mt-6 space-y-4 text-left"
+          data-testid="login-form"
         >
           <div>
             <input
               {...register("email")}
               type="email"
               placeholder="Email address"
+              data-testid="login-email"
               className="w-full rounded-chip border border-border px-3 py-2 font-body shadow-card placeholder:text-gray-500"
             />
             {formState.errors.email && (
@@ -62,6 +64,7 @@ export default function LoginPage() {
                 type="password"
                 placeholder="Password"
                 className="w-full rounded-chip border border-border px-3 py-2 pr-16 font-body shadow-card placeholder:text-gray-500"
+                data-testid="login-password"
               />
               <Link
                 href="/forgot-password"
@@ -82,6 +85,7 @@ export default function LoginPage() {
             size="lg"
             className="w-full"
             disabled={formState.isSubmitting || loginMutation.isPending}
+            data-testid="login-submit"
           >
             Login
           </Button>

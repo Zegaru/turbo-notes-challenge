@@ -171,6 +171,7 @@ function NoteEditorForm({
 
   return (
     <div
+      data-testid="note-editor"
       className={`relative flex h-full min-h-0 w-full flex-col rounded-2xl border-2 transition-shadow duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.04),0_1px_4px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.04)] ${bgClass}`}
     >
       <div
@@ -278,7 +279,7 @@ function NoteEditorForm({
               </Button>
             </>
           )}
-          <Link href={closeHref} className="text-gray-500 hover:text-black p-1">
+          <Link href={closeHref} className="text-gray-500 hover:text-black p-1" data-testid="note-editor-close">
             <svg
               className="h-6 w-6"
               fill="none"
@@ -360,6 +361,7 @@ function NoteEditorForm({
                 }}
                 placeholder="Note Title"
                 className="w-full bg-transparent font-heading text-3xl font-bold text-black outline-none placeholder:text-gray-800/50 sm:text-4xl"
+                data-testid="note-title"
               />
 
               <div className="mt-6 flex flex-wrap gap-2">
@@ -409,6 +411,7 @@ function NoteEditorForm({
                     }}
                     placeholder="Pour your heart out..."
                     className="scrollbar flex-1 min-w-0 resize-none bg-transparent font-body text-lg text-gray-900 outline-none placeholder:text-gray-800/50 leading-relaxed"
+                    data-testid="note-content"
                   />
                   <div
                     className="h-px w-full shrink-0 bg-gray-300/60 lg:h-auto lg:w-px"
@@ -428,6 +431,7 @@ function NoteEditorForm({
                   }}
                   placeholder="Pour your heart out..."
                   className="scrollbar mt-4 w-full flex-1 min-h-[200px] resize-none bg-transparent font-body text-lg text-gray-900 outline-none placeholder:text-gray-800/50 leading-relaxed"
+                  data-testid="note-content"
                 />
               ) : (
                 <div className="mt-4 flex-1 min-h-[200px]">

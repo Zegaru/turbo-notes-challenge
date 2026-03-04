@@ -41,12 +41,14 @@ export default function SignupPage() {
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="mt-6 space-y-4 text-left"
+          data-testid="signup-form"
         >
           <div>
             <input
               {...register("email")}
               type="email"
               placeholder="Email address"
+              data-testid="signup-email"
               className="w-full rounded-chip border border-border px-3 py-2 font-body shadow-card placeholder:text-gray-500"
             />
             {formState.errors.email && (
@@ -61,6 +63,7 @@ export default function SignupPage() {
               type="password"
               placeholder="Password"
               className="w-full rounded-chip border border-border px-3 py-2 font-body shadow-card placeholder:text-gray-500"
+              data-testid="signup-password"
             />
             {formState.errors.password && (
               <p className="mt-1 text-sm text-red-500">
@@ -74,6 +77,7 @@ export default function SignupPage() {
             size="lg"
             className="w-full"
             disabled={formState.isSubmitting || signupMutation.isPending}
+            data-testid="signup-submit"
           >
             Sign Up
           </Button>

@@ -56,6 +56,8 @@ export function NoteRow({
   return (
     <Link
       href={href}
+      data-testid="note-row"
+      data-note-id={String(note.id)}
       className={`group relative block rounded-2xl border-2 p-4 font-body transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06),0_4px_8px_rgba(0,0,0,0.03)] sm:p-6 ${bgClass} ${
         isSelected ? "ring-2 ring-black ring-offset-2 ring-offset-bg" : ""
       }`}
@@ -119,6 +121,7 @@ export function NoteRow({
           }}
           className="shrink-0 p-1 text-gray-600 hover:text-accent"
           aria-label={note.pinned ? "Unpin note" : "Pin note"}
+          data-testid="note-pin-btn"
         >
           {note.pinned ? (
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">

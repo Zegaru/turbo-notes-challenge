@@ -113,6 +113,7 @@ export function ImageUploader({
               className="hidden"
               onChange={handleChange}
               disabled={disabled || uploading}
+              data-testid="image-upload-input"
             />
             <Button
               type="button"
@@ -124,6 +125,7 @@ export function ImageUploader({
                 inputRef.current?.click();
               }}
               className="h-7 rounded-sm bg-black/5 px-2! text-[10px] font-medium tracking-widest text-gray-600 uppercase hover:bg-black/10 hover:text-black"
+              data-testid="image-upload-trigger"
             >
               {uploading ? "Uploading…" : "Add image"}
             </Button>

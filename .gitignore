@@ -38,6 +38,9 @@ Thumbs.db
 htmlcov/
 .pytest_cache/
 .tox/
+frontend/e2e/.auth/
+playwright-report/
+test-results/
 
 # Docker
 postgres_data/
