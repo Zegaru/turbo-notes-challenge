@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { AppLogo } from "@/components/ui/app-logo";
 import { useLoginMutation } from "@/lib/auth-queries";
+import Image from "next/image";
 
 const schema = z.object({
   email: z.string().email(),
@@ -33,9 +33,13 @@ export default function LoginPage() {
       className="flex min-h-screen items-center justify-center bg-bg p-4"
     >
       <div className="w-full max-w-sm text-center">
-        <div className="flex justify-center">
-          <AppLogo size="xl" />
-        </div>
+        <Image
+          src="/images/cactus.png"
+          alt=""
+          width={120}
+          height={120}
+          className="mx-auto"
+        />
         <h1 className="mt-4 text-2xl font-heading font-bold text-border">
           Yay, You&apos;re Back!
         </h1>
