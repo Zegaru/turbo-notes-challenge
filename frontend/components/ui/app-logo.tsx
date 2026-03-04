@@ -49,7 +49,7 @@ export function AppLogo({
 
   if (asLink) {
     return (
-      <Link href="/app" className="rounded focus-ring">
+      <Link href="/" className="rounded flex focus-ring">
         {content}
       </Link>
     );

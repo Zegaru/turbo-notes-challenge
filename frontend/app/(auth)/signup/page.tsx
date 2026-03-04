@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import Link from "next/link";
+import { AppLogo } from "@/components/ui/app-logo";
 import { Button } from "@/components/ui/button";
 import { useSignupMutation } from "@/lib/auth-queries";
 
@@ -30,8 +31,11 @@ export default function SignupPage() {
   return (
     <main
       id="main"
-      className="flex min-h-screen items-center justify-center bg-bg p-4"
+      className="relative flex min-h-screen items-center justify-center bg-bg p-4"
     >
+      <div className="absolute left-4 top-4">
+        <AppLogo size="md" asLink />
+      </div>
       <div className="w-full max-w-sm text-center">
         <Image
           src="/images/cat.png"

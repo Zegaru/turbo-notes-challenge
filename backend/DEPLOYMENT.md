@@ -2,19 +2,19 @@
 
 ## Required Environment Variables
 
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `DJANGO_SECRET_KEY` | Yes | Secret key for Django (use a strong random value) | `your-50-char-secret` |
-| `POSTGRES_PASSWORD` | Yes | PostgreSQL password | `secure-password` |
-| `POSTGRES_USER` | No | PostgreSQL user (default: `notes`) | `notes` |
-| `POSTGRES_DB` | No | PostgreSQL database (default: `notes`) | `notes` |
-| `DATABASE_URL` | No* | Full DB URL (auto-built from POSTGRES_* in compose) | `postgres://user:pass@db:5432/notes` |
-| `ALLOWED_HOSTS` | Yes | Comma-separated hostnames Django will serve | `api.example.com,your-domain.com` |
-| `CORS_ORIGINS` | Yes | Comma-separated frontend origins for CORS | `https://app.example.com` |
-| `DEBUG` | No | Set to `false` in production | `false` |
-| `PORT` | No | Port for gunicorn (Coolify sets this) | `8000` |
-| `MEDIA_ROOT` | No | Persistent path for uploaded files (default: `/data/media` in prod) | `/data/media` |
-| `STATIC_ROOT` | No | Path for collectstatic output (default: `/app/staticfiles`) | `/app/staticfiles` |
+| Variable            | Required | Description                                                         | Example                              |
+| ------------------- | -------- | ------------------------------------------------------------------- | ------------------------------------ |
+| `DJANGO_SECRET_KEY` | Yes      | Secret key for Django (use a strong random value)                   | `your-50-char-secret`                |
+| `POSTGRES_PASSWORD` | Yes      | PostgreSQL password                                                 | `secure-password`                    |
+| `POSTGRES_USER`     | No       | PostgreSQL user (default: `notes`)                                  | `notes`                              |
+| `POSTGRES_DB`       | No       | PostgreSQL database (default: `notes`)                              | `notes`                              |
+| `DATABASE_URL`      | No\*     | Full DB URL (auto-built from POSTGRES\_\* in compose)               | `postgres://user:pass@db:5432/notes` |
+| `ALLOWED_HOSTS`     | Yes      | Comma-separated hostnames (localhost/127.0.0.1 are always included for health checks) | `api.notes.zegaru.com`               |
+| `CORS_ORIGINS`      | Yes      | Comma-separated frontend origins for CORS                           | `https://app.example.com`            |
+| `DEBUG`             | No       | Set to `false` in production                                        | `false`                              |
+| `PORT`              | No       | Port for gunicorn (Coolify sets this)                               | `8000`                               |
+| `MEDIA_ROOT`        | No       | Persistent path for uploaded files (default: `/data/media` in prod) | `/data/media`                        |
+| `STATIC_ROOT`       | No       | Path for collectstatic output (default: `/app/staticfiles`)         | `/app/staticfiles`                   |
 
 \* `DATABASE_URL` is set automatically in docker-compose.prod.yml from `POSTGRES_*` vars.
 
@@ -25,6 +25,13 @@
 3. Set the environment variables above in Coolify's env configuration.
 4. Ensure `ALLOWED_HOSTS` includes your API domain and `CORS_ORIGINS` includes your frontend URL.
 5. The `/health` endpoint is used for health checks; Coolify can probe it.
+
+### Domain Configuration
+
+Coolify handles all proxy/Traefik configuration automatically. No extra labels are needed in the compose file.
+
+- **Domains for backend**: In Coolify's "Domains for backend" field, add your domain **with the port** so Coolify knows where to route traffic inside the container. Example: `https://api.notes.zegaru.com:8000` — the `:8000` tells Coolify the backend listens on port 8000; the proxy still serves it on 80/443 externally.
+- **ALLOWED_HOSTS**: Must include every domain that will reach the backend, e.g. `api.notes.zegaru.com,r4scocswsksk0ksw8kcwogo0.5.161.44.15.sslip.io`.
 
 ## Endpoints
 
