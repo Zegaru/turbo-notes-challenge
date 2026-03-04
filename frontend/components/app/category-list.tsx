@@ -54,7 +54,14 @@ export function CategoryList() {
       )}
 
       {!isPending && !isError && categories.length === 0 && (
-        <p className="text-sm text-gray-500">No categories yet</p>
+        <div className="rounded-lg border border-dashed border-gray-300/80 bg-gray-50/50 px-4 py-6 text-center">
+          <p className="font-body text-sm font-medium text-gray-600">
+            No categories yet
+          </p>
+          <p className="mt-1 text-xs text-gray-500">
+            Create one to organize your notes
+          </p>
+        </div>
       )}
     </div>
   );

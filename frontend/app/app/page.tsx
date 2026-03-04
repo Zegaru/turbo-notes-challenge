@@ -31,7 +31,7 @@ function AppContent() {
           className="hidden rounded-full border-border px-6 py-2.5 font-body text-sm font-medium lg:flex"
           data-testid="new-note-btn"
         >
-          + New Note
+          {isPending ? "Creating…" : "+ New Note"}
         </Button>
       </div>
 

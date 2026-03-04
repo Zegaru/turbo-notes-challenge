@@ -6,6 +6,7 @@ import {
   type Note,
 } from "@/lib/api-client";
 import { MarkdownPreview } from "@/components/app/markdown-preview";
+import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 
 const DEFAULT_CARD_CLASS = "bg-note-orange-card border-note-orange";
@@ -36,6 +37,7 @@ type NoteRowProps = {
   isSelected: boolean;
   categoryParam: string | null;
   onPinToggle: (note: Note) => void;
+  isPinning?: boolean;
 };
 
 export function NoteRow({
@@ -43,6 +45,7 @@ export function NoteRow({
   isSelected,
   categoryParam,
   onPinToggle,
+  isPinning = false,
 }: NoteRowProps) {
   const href = categoryParam
     ? `/app?category=${categoryParam}&note=${note.id}`
@@ -81,7 +84,7 @@ export function NoteRow({
           <h3 className="mt-4 font-heading text-2xl text-black sm:text-3xl">
             {note.title || "Untitled"}
           </h3>
-          <div className="mt-3 line-clamp-4 overflow-hidden">
+          <div className="mt-3 line-clamp-6 overflow-hidden">
             <MarkdownPreview
               content={note.content || ""}
               className="text-sm text-gray-800 leading-relaxed [&_h1]:text-base [&_h1]:font-bold [&_h2]:text-sm [&_h2]:font-bold [&_h3]:text-sm [&_h3]:font-bold"
@@ -119,11 +122,14 @@ export function NoteRow({
             e.stopPropagation();
             onPinToggle(note);
           }}
-          className="shrink-0 p-1 text-gray-600 hover:text-accent"
+          disabled={isPinning}
+          className="shrink-0 p-1 text-gray-600 hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label={note.pinned ? "Unpin note" : "Pin note"}
           data-testid="note-pin-btn"
         >
-          {note.pinned ? (
+          {isPinning ? (
+            <Spinner size="md" />
+          ) : note.pinned ? (
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
             </svg>

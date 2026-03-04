@@ -16,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { CategorySelect } from "@/components/app/category-select";
 import { ImageModal } from "@/components/app/image-modal";
 import { ImageUploader } from "@/components/app/image-uploader";
@@ -191,6 +192,7 @@ function NoteEditorForm({
                 value={categoryId}
                 onChange={setCategoryId}
                 categories={categories}
+                disabled={saveStatus === "saving"}
               />
               <Button
                 variant="ghost"
@@ -202,9 +204,16 @@ function NoteEditorForm({
                   })
                 }
                 disabled={suggestMutation.isPending || !hasTitleOrContent}
-                className="rounded-chip px-2 py-1 text-xs"
+                className="rounded-chip px-2 py-1 text-xs inline-flex items-center gap-1.5"
               >
-                {suggestMutation.isPending ? "…" : "Suggest category"}
+                {suggestMutation.isPending ? (
+                  <>
+                    <Spinner size="sm" />
+                    <span>Thinking</span>
+                  </>
+                ) : (
+                  "Suggest category"
+                )}
               </Button>
               {suggestion && (
                 <span className="inline-flex items-center gap-1.5 rounded-chip border border-border bg-bg px-2 py-1 font-body text-xs">
@@ -243,6 +252,7 @@ function NoteEditorForm({
                 variant="ghost"
                 size="sm"
                 onClick={() => setEditMode(false)}
+                disabled={saveStatus === "saving"}
                 className="rounded-chip px-3 py-1.5"
               >
                 Done
@@ -262,20 +272,25 @@ function NoteEditorForm({
                 type="button"
                 onClick={handleCreateSubmit}
                 disabled={isCreatePending}
+                aria-label={isCreatePending ? "Creating…" : "Save note"}
               >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                {isCreatePending ? (
+                  <Spinner size="lg" />
+                ) : (
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                )}
               </Button>
             </>
           )}
