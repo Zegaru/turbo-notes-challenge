@@ -18,8 +18,6 @@ services:
   backend:
     build: ./backend
     command: ['sh', '-c', 'gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}']
-    labels:
-      - 'traefik.http.services.backend.loadbalancer.server.port=8000'
     env_file:
       - .env
     environment:
