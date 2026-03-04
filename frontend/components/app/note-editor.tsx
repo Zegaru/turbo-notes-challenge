@@ -178,7 +178,7 @@ function NoteEditorForm({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 flex items-center justify-between p-6 pb-2">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 p-6 pb-2! sm:p-8 lg:p-12">
         <div className="flex items-center gap-2">
           {showViewMode ? (
             <span className="inline-flex items-center gap-1.5 rounded-chip border border-border bg-bg/50 px-3 py-1 font-body text-sm text-gray-800">
@@ -296,7 +296,7 @@ function NoteEditorForm({
         </div>
       </div>
 
-      <div className="scrollbar relative z-10 flex-1 min-h-0 overflow-y-auto p-12 pt-2 h-full">
+      <div className="scrollbar relative z-10 flex-1 min-h-0 overflow-y-auto p-6 pt-2! h-full sm:p-8 lg:p-12">
         <div className="flex min-h-min flex-col h-full">
           <div className="flex justify-end ">
             <span className="text-sm text-gray-600 font-body">
@@ -337,7 +337,7 @@ function NoteEditorForm({
             <>
               <h1
                 onClick={() => setEditMode(true, "title")}
-                className="font-heading text-4xl font-bold text-black cursor-text rounded px-1 -mx-1 hover:bg-black/5 transition-colors"
+                className="font-heading text-3xl font-bold text-black cursor-text rounded px-1 -mx-1 hover:bg-black/5 transition-colors sm:text-4xl"
               >
                 {title || "Untitled"}
               </h1>
@@ -359,10 +359,10 @@ function NoteEditorForm({
                   handleFieldChange();
                 }}
                 placeholder="Note Title"
-                className="w-full bg-transparent font-heading text-4xl font-bold text-black outline-none placeholder:text-gray-800/50"
+                className="w-full bg-transparent font-heading text-3xl font-bold text-black outline-none placeholder:text-gray-800/50 sm:text-4xl"
               />
 
-              <div className="mt-6 flex gap-2">
+              <div className="mt-6 flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => setContentMode("edit")}
@@ -399,7 +399,7 @@ function NoteEditorForm({
               </div>
 
               {contentMode === "split" ? (
-                <div className="mt-4 flex-1 min-h-[200px] flex gap-4 overflow-hidden">
+                <div className="mt-4 flex-1 min-h-[200px] flex flex-col gap-4 overflow-hidden lg:flex-row">
                   <textarea
                     ref={contentTextareaRef}
                     value={content}
@@ -410,7 +410,10 @@ function NoteEditorForm({
                     placeholder="Pour your heart out..."
                     className="scrollbar flex-1 min-w-0 resize-none bg-transparent font-body text-lg text-gray-900 outline-none placeholder:text-gray-800/50 leading-relaxed"
                   />
-                  <div className="w-px shrink-0 bg-gray-300/60" aria-hidden />
+                  <div
+                    className="h-px w-full shrink-0 bg-gray-300/60 lg:h-auto lg:w-px"
+                    aria-hidden
+                  />
                   <div className="scrollbar flex-1 min-w-0 overflow-y-auto">
                     <MarkdownPreview content={content} />
                   </div>

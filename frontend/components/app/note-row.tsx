@@ -56,7 +56,7 @@ export function NoteRow({
   return (
     <Link
       href={href}
-      className={`group relative block rounded-2xl border-2 p-6 font-body transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06),0_4px_8px_rgba(0,0,0,0.03)] ${bgClass} ${
+      className={`group relative block rounded-2xl border-2 p-4 font-body transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06),0_4px_8px_rgba(0,0,0,0.03)] sm:p-6 ${bgClass} ${
         isSelected ? "ring-2 ring-black ring-offset-2 ring-offset-bg" : ""
       }`}
     >
@@ -76,7 +76,7 @@ export function NoteRow({
               <span className="text-gray-700">{note.category_name}</span>
             )}
           </div>
-          <h3 className="mt-4 font-heading text-3xl text-black">
+          <h3 className="mt-4 font-heading text-2xl text-black sm:text-3xl">
             {note.title || "Untitled"}
           </h3>
           <div className="mt-3 line-clamp-4 overflow-hidden">

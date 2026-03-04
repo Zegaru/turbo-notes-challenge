@@ -27,7 +27,7 @@ export const DialogPopup = React.forwardRef<
   return (
     <BaseDialog.Popup
       ref={ref}
-      className={`fixed inset-0 z-50 flex items-center justify-center p-8 outline-none pointer-events-none transition-all duration-300 data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0 ${className || ""}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 outline-none pointer-events-none transition-all duration-300 data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0 sm:p-6 lg:p-8 ${className || ""}`}
       {...props}
     />
   );
