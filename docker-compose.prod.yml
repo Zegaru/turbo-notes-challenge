@@ -17,7 +17,9 @@ services:
 
   backend:
     build: ./backend
-    command: ["sh", "-c", "gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
+    command: ['sh', '-c', 'gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}']
+    labels:
+      - 'traefik.http.services.backend.loadbalancer.server.port=8000'
     env_file:
       - .env
     environment:
@@ -25,14 +27,20 @@ services:
       PORT: ${PORT:-8000}
       MEDIA_ROOT: /data/media
       STATIC_ROOT: /app/staticfiles
-      DEBUG: "false"
+      DEBUG: 'false'
     volumes:
       - media_data:/data
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ['CMD', 'python', '-c', "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('PORT', '8000') + '/health/')"]
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('PORT', '8000') + '/health/')",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
