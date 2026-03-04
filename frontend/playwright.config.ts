@@ -17,6 +17,7 @@ export default defineConfig({
       name: "setup",
       testMatch: /auth\.setup\.ts/,
       retries: 0,
+      timeout: 60_000,
     },
     {
       name: "e2e-authenticated",

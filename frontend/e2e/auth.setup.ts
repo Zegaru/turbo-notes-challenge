@@ -3,7 +3,8 @@ import { test as setup } from "@playwright/test";
 const authFile = "e2e/.auth/user.json";
 
 setup("authenticate", async ({ page }) => {
-  await page.goto("/signup");
+  await page.goto("/signup", { waitUntil: "load" });
+  await page.getByTestId("signup-email").waitFor({ state: "visible", timeout: 30_000 });
   await page.getByTestId("signup-email").fill("e2e-test@example.com");
   await page.getByTestId("signup-password").fill("e2etestpass123");
   await page.getByTestId("signup-submit").click();

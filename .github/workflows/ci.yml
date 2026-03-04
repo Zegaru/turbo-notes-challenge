@@ -76,6 +76,13 @@ jobs:
       - name: Start services
         run: docker compose up -d --wait
 
+      - name: Warmup frontend
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/signup > /dev/null && break
+            sleep 2
+          done
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9

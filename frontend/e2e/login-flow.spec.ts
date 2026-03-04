@@ -12,7 +12,7 @@ test.describe("Login flow", () => {
 
     await page.getByTestId("category-input").fill("E2E Test Category");
     await page.getByTestId("category-input").press("Enter");
-    await expect(page.getByText("E2E Test Category")).toBeVisible();
+    await expect(page.getByRole("link", { name: "E2E Test Category", exact: true })).toBeVisible();
 
     await page.getByTestId("new-note-btn").click();
     await expect(page.getByTestId("note-editor")).toBeVisible();
