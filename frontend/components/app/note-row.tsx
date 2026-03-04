@@ -10,6 +10,8 @@ import Link from "next/link";
 
 const DEFAULT_CARD_CLASS = "bg-note-orange-card border-note-orange";
 
+const PHOTO_ROTATIONS = ["-rotate-2", "rotate-1", "-rotate-1"] as const;
+
 function formatRelativeDate(iso: string) {
   const d = new Date(iso);
   const now = new Date();
@@ -54,11 +56,17 @@ export function NoteRow({
   return (
     <Link
       href={href}
-      className={`block rounded-2xl border-2 p-6 font-body shadow-card transition-transform hover:-translate-y-1 ${bgClass} ${
+      className={`group relative block rounded-2xl border-2 p-6 font-body transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06),0_4px_8px_rgba(0,0,0,0.03)] ${bgClass} ${
         isSelected ? "ring-2 ring-black ring-offset-2 ring-offset-bg" : ""
       }`}
     >
-      <div className="flex items-start justify-between gap-2">
+      {/* Subtle overlay to simulate paper surface/lighting */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-linear-to-br from-white/40 via-transparent to-black/5 opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="text-sm flex items-center gap-2">
             <span className="font-bold text-black">
@@ -77,6 +85,30 @@ export function NoteRow({
               className="text-sm text-gray-800 leading-relaxed [&_h1]:text-base [&_h1]:font-bold [&_h2]:text-sm [&_h2]:font-bold [&_h3]:text-sm [&_h3]:font-bold"
             />
           </div>
+          {note.images && note.images.length > 0 && (
+            <div className="mt-4 flex items-end gap-1">
+              {note.images.slice(0, 3).map((img, i) => (
+                <div
+                  key={img.id}
+                  className={`relative h-15 w-15 shrink-0 rounded-[2px] border border-black/5 bg-[#FDFBF7] p-0.5 pb-3 shadow-[0_2px_6px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.03)] transition-transform duration-300 group-hover:scale-105 ${PHOTO_ROTATIONS[i % PHOTO_ROTATIONS.length]}`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={img.url}
+                    alt=""
+                    className="h-full w-full object-cover filter brightness-95 contrast-[1.1] sepia-[0.2]"
+                  />
+                </div>
+              ))}
+              {note.images.length > 3 && (
+                <div
+                  className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-[2px] border border-black/5 bg-[#FDFBF7] pb-2 text-xs font-medium text-gray-500 shadow-[0_2px_6px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.03)] transition-transform duration-300 group-hover:scale-105 ${PHOTO_ROTATIONS[note.images.length % PHOTO_ROTATIONS.length]}`}
+                >
+                  +{note.images.length - 3}
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <button
           type="button"

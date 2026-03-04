@@ -69,7 +69,7 @@ function AppContent() {
         <DialogPortal>
           <DialogBackdrop />
           <DialogPopup>
-            <div className="relative w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl flex flex-col bg-bg pointer-events-auto">
+            <div className="relative w-full max-w-5xl h-[85vh] min-h-0 rounded-2xl shadow-2xl flex flex-col bg-bg pointer-events-auto">
               <NoteEditor />
             </div>
           </DialogPopup>

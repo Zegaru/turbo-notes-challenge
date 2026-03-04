@@ -118,4 +118,15 @@ export const notesApi = {
   delete: (id: number) => api.delete(`/api/notes/${id}/`),
   suggestCategory: (data: { title?: string; content?: string }) =>
     api.post<SuggestCategoryResponse>("/api/notes/suggest_category/", data),
+  uploadImage: (
+    noteId: number,
+    file: File,
+    options?: { onProgress?: (loaded: number, total: number) => void }
+  ) =>
+    api.postMultipart<NoteImage>(
+      `/api/notes/${noteId}/images/`,
+      "image",
+      file,
+      options
+    ),
 };

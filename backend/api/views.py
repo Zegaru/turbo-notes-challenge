@@ -1,6 +1,6 @@
 import difflib
 
-from core.models import Category, Note
+from core.models import Category, Note, NoteImage
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .ai import suggest_category
 from .serializers import (
     CategorySerializer,
+    NoteImageSerializer,
     NoteSerializer,
     SignupSerializer,
     SuggestCategoryRequestSerializer,
@@ -120,3 +121,15 @@ class NoteViewSet(viewsets.ModelViewSet):
                 "reason": result.get("reason", "AI unavailable"),
             }
         )
+
+    @action(detail=True, methods=["post"], url_path="images")
+    def upload_image(self, request, pk=None):
+        note = self.get_object()
+        image_file = request.FILES.get("image")
+        if not image_file:
+            return Response({"detail": "Missing 'image' file"}, status=400)
+        if note.images.count() >= 5:
+            return Response({"detail": "Maximum 5 images per note"}, status=400)
+        note_image = NoteImage.objects.create(note=note, image=image_file)
+        serializer = NoteImageSerializer(note_image, context={"request": request})
+        return Response(serializer.data, status=201)

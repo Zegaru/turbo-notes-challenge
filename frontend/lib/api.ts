@@ -71,11 +71,75 @@ async function request<T>(
 
 export type ApiRequestOptions = { signal?: AbortSignal };
 
+export type PostMultipartOptions = {
+  onProgress?: (loaded: number, total: number) => void;
+};
+
+function postMultipart<T>(
+  path: string,
+  fieldName: string,
+  file: File,
+  options?: PostMultipartOptions
+): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const formData = new FormData();
+    formData.append(fieldName, file);
+
+    xhr.open("POST", `${BASE_URL}${path}`);
+    const access = getAccessToken();
+    if (access) {
+      xhr.setRequestHeader("Authorization", `Bearer ${access}`);
+    }
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && options?.onProgress) {
+        options.onProgress(e.loaded, e.total);
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 401) {
+        doRefresh().then((refreshed) => {
+          if (refreshed) {
+            postMultipart<T>(path, fieldName, file, options)
+              .then(resolve)
+              .catch(reject);
+          } else {
+            reject(new Error("Unauthorized"));
+          }
+        });
+        return;
+      }
+      if (xhr.status < 200 || xhr.status >= 300) {
+        try {
+          const err = JSON.parse(xhr.responseText);
+          reject(new Error(err.detail ?? err.message ?? `HTTP ${xhr.status}`));
+        } catch {
+          reject(new Error(`HTTP ${xhr.status}`));
+        }
+        return;
+      }
+      const text = xhr.responseText;
+      resolve(text ? (JSON.parse(text) as T) : ({} as T));
+    };
+
+    xhr.onerror = () => reject(new Error("Network error"));
+    xhr.send(formData);
+  });
+}
+
 export const api = {
   get: <T>(path: string, options?: ApiRequestOptions) =>
     request<T>(path, { method: "GET", ...options }),
   post: <T>(path: string, body?: unknown, options?: ApiRequestOptions) =>
     request<T>(path, { method: "POST", body, ...options }),
+  postMultipart: <T>(
+    path: string,
+    fieldName: string,
+    file: File,
+    options?: PostMultipartOptions
+  ) => postMultipart<T>(path, fieldName, file, options),
   put: <T>(path: string, body?: unknown, options?: ApiRequestOptions) =>
     request<T>(path, { method: "PUT", body, ...options }),
   patch: <T>(path: string, body?: unknown, options?: ApiRequestOptions) =>
