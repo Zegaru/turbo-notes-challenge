@@ -88,3 +88,9 @@
     background: var(--scrollbar-thumb-hover);
   }
 }
+
+@keyframes landing-reveal {
+  to {
+    opacity: 1;
+  }
+}

@@ -20,6 +20,10 @@ export function getAccessToken(): string | null {
   return safeGet(ACCESS_KEY);
 }
 
+export function isAuthenticated(): boolean {
+  return !!getAccessToken();
+}
+
 export function getRefreshToken(): string | null {
   return safeGet(REFRESH_KEY);
 }
